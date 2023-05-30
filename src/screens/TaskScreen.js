@@ -277,7 +277,7 @@ const TaskScreen1 = ({ navigation }) => {
                   
               }}
               containerStyle={{
-                marginTop:25,
+                marginTop:15,
     
                 width: "92%",
                 
@@ -368,12 +368,9 @@ const TaskScreen1 = ({ navigation }) => {
                 containerStyle={{
                   marginTop:15,
                   width: "92%",
-                  alignSelf: 'center',
-                  
+                  alignSelf: 'center',   
                 }}
-
               />
-
             </View>
           </View>
         </Modal>
