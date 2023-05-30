@@ -16,32 +16,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api } from "../../Api";
 import CheckInternet from "../components/CheckInternet";
 import { useCallback } from "react";
-// const DATA = [
-//   {
-//     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-//     name: "Adam",
-//     uri: "https://images.unsplash.com/photo-1610043809095-9c87fe936e03?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=435&q=80",
-//     title: "First Item",
-//     comment:
-//       "Lorem ipsum dolor sit amet consectetur. Cursus risus metus sit arcu lectus arcu iaculis eget ullamcorper. Ornare id ut nullasdf euismod tortor nec.",
-//   },
-//   {
-//     id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-//     name: "Eric",
-//     uri: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80",
-//     title: "Second Item",
-//     comment:
-//       "Lorem ipsum dolor sit amet consectetur. Cursus risus metus sit arcu lectus arcu iaculis eget ullamcorper. Ornare id ut nullasdf euismod tortor nec.",
-//   },
-//   {
-//     id: "58694a0f-3da1-471f-bd96-145571e29d72",
-//     name: "John",
-//     uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
-//     title: "Third Item",
-//     comment:
-//       "Lorem ipsum dolor sit amet consectetur. Cursus risus metus sit arcu lectus arcu iaculis eget ullamcorper. Ornare id ut nulla euismod tortor nec. Lorem ipsum dolor sit amet consectetur. Cursus",
-//   },
-// ];
 
 const Ratings = ({ navigation }) => {
   const [data, setData] = useState();
@@ -184,6 +158,7 @@ const Ratings = ({ navigation }) => {
       <View style={{ marginHorizontal: "5%", marginTop: 10 }}>
         <Titlebar title={"Rating and Reviews"} />
       </View>
+      
       <View style={{ flex: 1, alignItems: "center" }}>
         {data && data.length > 0 ? (
           <FlatList

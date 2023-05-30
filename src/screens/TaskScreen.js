@@ -13,18 +13,16 @@ import { api } from "../../Api";
 import React, { useEffect, useState } from "react";
 import { TextInput, DefaultTheme } from "react-native-paper";
 import { Entypo } from "@expo/vector-icons";
-import { EvilIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import CustomCheckbox from "./../components/Checkbox";
 import Titlebar from "./../components/TitileBar";
-import { Svg, Image } from "react-native-svg";
 import SvgUri from "react-native-svg-uri";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from '@expo/vector-icons';
 import MapboxPlacesAutocomplete from "react-native-mapbox-places-autocomplete"
 import Mapbox from '@rnmapbox/maps';
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import CheckInternet from "../components/CheckInternet";
+import { Feather } from '@expo/vector-icons'; 
 
 Mapbox.setAccessToken('pk.eyJ1IjoiaGFyc2h1MTQxMiIsImEiOiJjbGdtMWN1MHMwMWMxM3FwcGZ3a3p2ajliIn0.sAqxecqbNtP8fVkl_9m9xQ');
 
@@ -248,6 +246,8 @@ const TaskScreen1 = ({ navigation }) => {
         >
           <View style={styles.centeredView}>
            
+          
+           
             <View>
               <MapboxPlacesAutocomplete
                 id="origin"
@@ -269,14 +269,21 @@ const TaskScreen1 = ({ navigation }) => {
                 }}
 
                 countryId="IN"
-                containerStyle={{
-
-                  marginTop: 8,
-                  width: "92%",
-                  // height:100,
-                  alignSelf: 'center',
-                  borderWidth: 1,
-                }}
+                inputStyle={{
+                  backgroundColor:"white",
+                  borderWidth:1,
+                  borderRadius:10,
+                  height:"150%"
+                  
+              }}
+              containerStyle={{
+                marginTop:25,
+    
+                width: "92%",
+                
+                alignSelf: 'center',
+                
+              }}
 
 
               />
@@ -329,12 +336,9 @@ const TaskScreen1 = ({ navigation }) => {
 
         <Modal
           animationType="slide"
-
           visible={isModal1}
           presentationStyle="overFullScreen"
-          onRequestClose={() => setIsModal1(!isModal1)}
-
-        >
+          onRequestClose={() => setIsModal1(!isModal1)}>
           <View style={styles.centeredView}>
             <View>
               <MapboxPlacesAutocomplete
@@ -351,19 +355,21 @@ const TaskScreen1 = ({ navigation }) => {
                   setDropLong(data.geometry.coordinates[0])
                   setDropLat(data.geometry.coordinates[1])
                 }}
-
                 onClearInput={({ id }) => {
                   id === "origin" && setDeliverTo(null);
                 }}
-
                 countryId="IN"
+                inputStyle={{
+                    backgroundColor:"white",
+                    height:"150%",
+                    borderWidth:1,
+                    borderRadius:8
+                }}
                 containerStyle={{
-
-                  marginTop: 8,
+                  marginTop:15,
                   width: "92%",
-                  // height:100,
                   alignSelf: 'center',
-                  borderWidth: 1,
+                  
                 }}
 
               />
