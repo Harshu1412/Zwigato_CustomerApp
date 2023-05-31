@@ -9,7 +9,6 @@ import {
   Alert,
   Pressable,
   ScrollView,
-  TouchableWithoutFeedback,
   TextInput,
   BackHandler,
   ActivityIndicator,
@@ -18,8 +17,6 @@ import React, {
   useEffect,
   useState,
   useCallback,
-  useRef,
-  useLayoutEffect,
 } from "react";
 import { StatusBar } from "expo-status-bar";
 import styled from "styled-components/native";
@@ -114,7 +111,6 @@ const EditProfile = ({ route }) => {
   const [loading, setLoading] = useState(false);
   const [mainLoading, setMainLoading] = useState(false);
   const [userData, setUserData] = useState(null);
-  const [save, setSave] = useState(false);
   AsyncStorage.getItem("token").then((token) => {
     setAuthToken(token);
   });
@@ -220,7 +216,7 @@ const EditProfile = ({ route }) => {
   };
   const handleSavePress = () => {
     setError2(null);
-    const nameRegex = /^[a-zA-Z ]{2,30}$/;
+    const nameRegex = /^[a-zA-Z\s]{2,33}$/;
     const addressRegex = /^[a-zA-Z0-9\s\-\#\,\.]+$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     const phoneRegex = /^[0-9]{10}$/;
@@ -244,7 +240,6 @@ const EditProfile = ({ route }) => {
       );
       return;
     }
-    setSave(true);
     setMainLoading(true);
     setLoading(true);
     setEditable(false);
@@ -362,37 +357,25 @@ const EditProfile = ({ route }) => {
       // console.log(error);
       setLoading(false);
     } finally {
-      setSave(false);
       setMainLoading(false);
     }
   };
   return (
     <>
-      {mainLoading ? (
-        <View
-          flex={1}
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "row",
-          }}
-        >
-          {save ? (
-            <Text
-              style={{
-                color: "black",
-                fontSize: 26,
-                fontFamily: "Montserrat_400Regular",
-              }}
-            >
-              Saving Data{" "}
-            </Text>
-          ) : (
-            ""
-          )}
-          <ActivityIndicator color={"black"} size={40} />
-        </View>
-      ) : (
+      {mainLoading && (<View >
+        <Modal
+          animationType="slide"
+          transparent
+          visible={mainLoading}>
+          <View style={styles.centeredView1}>
+            <View style={styles.modalView1}>
+              <ActivityIndicator size={40}/>
+            </View>
+          </View>
+        </Modal>
+       </View> 
+       ) 
+      }
         <SafeAreaView style={{ flex: 1, backgroundColor: "white", padding: 8 }}>
           <MView>
             <Modal
@@ -450,13 +433,13 @@ const EditProfile = ({ route }) => {
                   onPress={() => {
                     if (name === "" || name === null) {
                       setError("Enter Name");
-                      return true; // Prevent the back action
+                      return true; 
                     } else if (!isValidEmail(email)) {
                       setError1("Enter email");
-                      return true; // Prevent the back action
+                      return true; 
                     } else if (address === "" || address === null) {
                       setError3("Enter address");
-                      return true; // Prevent the back action
+                      return true; 
                     } else if (buttonText === "Save") {
                       setSaveError("Save Details First!!");
                       return true;
@@ -521,6 +504,7 @@ const EditProfile = ({ route }) => {
               <FterView flex={1}>
                 <TextInputs
                   label="Name"
+                  maxLength={33}
                   value={name}
                   onChangeText={(text) => {
                     setName(text);
@@ -626,18 +610,12 @@ const EditProfile = ({ route }) => {
                     </Text>
                   )}
 
-                  {loading ? (
-                    <View marginTop="auto">
-                      <ActivityIndicator color="black" size="large" />
-                    </View>
-                  ) : (
                     <View marginTop="auto">
                       <BlackButton
                         title={buttonText}
                         onPress={editable ? handleSavePress : handleEditPress}
                       />
                     </View>
-                  )}
                 </View>
               </FterView>
             </ScrollView>
@@ -648,7 +626,7 @@ const EditProfile = ({ route }) => {
           </MView>
           <CheckInternet />
         </SafeAreaView>
-      )}
+      
     </>
   );
 };
@@ -717,4 +695,20 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
   },
+  centeredView1: {
+    flex: 1,
+     justifyContent: 'center',
+     alignItems: 'center',
+     marginTop: 22,
+   },
+   modalView1: {
+     margin: 20,
+     borderRadius: 20,
+    width:"70%",
+    height:"20%",
+    justifyContent: 'center',
+    alignItems: 'center',
+     
+    
+   },
 });

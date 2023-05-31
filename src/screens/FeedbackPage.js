@@ -4,7 +4,7 @@ import {
   View,
   Image,
   TouchableOpacity,
-  ScrollView,Dimensions,ActivityIndicator
+  ScrollView,Dimensions,ActivityIndicator,Modal
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -32,6 +32,7 @@ const Feedback = ({ route }) => {
   const [driverName, setDriverName] = useState("");
   const [image, setImage] = useState("")
   const [loader,setLoader]=useState(true);
+ 
   AsyncStorage.getItem("token").then((token) => {
     setAuthToken(token);
   });
@@ -137,7 +138,21 @@ const Feedback = ({ route }) => {
 
   return (
     <>
-    {loader ? <ActivityIndicator size={24} style={{flex:1}}/> : (
+    {loader && (<View >
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={loader}
+          >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <ActivityIndicator size={40}/>
+            
+            </View>
+          </View>
+        </Modal>
+      
+      </View> ) }
       <>
         <View style={{ width: "90%", marginTop: 5, alignSelf: "center" }}>
         <Titlebar title={"Feedback"} />
@@ -230,7 +245,7 @@ const Feedback = ({ route }) => {
       </ScrollView>
       </>
 
-    )}
+
     
     </>
   );
@@ -242,6 +257,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    borderRadius: 20,
+    width:"60%",
+    height:"20%",
+    justifyContent: 'center',
+    alignItems: 'center',
+    
+  },
+ 
 });
 
 export default Feedback;

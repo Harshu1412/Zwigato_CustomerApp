@@ -129,7 +129,6 @@ export const RegisterOtpScreen = ({ route }) => {
   };
 
   const onVerifyOTP = async () => {
-    setIsLoading(true);
     const verificationCode =
       value1 + value2 + value3 + value4 + value5 + value6;
     if (verificationCode.length !== 6) {
@@ -138,6 +137,7 @@ export const RegisterOtpScreen = ({ route }) => {
       return;
     }
     try {
+    setIsLoading(true);
       const credential = PhoneAuthProvider.credential(
         verificationId || resend,
         verificationCode

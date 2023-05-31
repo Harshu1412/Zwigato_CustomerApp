@@ -4,7 +4,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  View,
+  View,Modal
 } from "react-native";
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { TextInput, DefaultTheme } from "react-native-paper";
@@ -77,13 +77,21 @@ const PlaceOrderDetailScreen = ({ route }) => {
 
   return (
     <>
-      {loading ? (
-        <ActivityIndicator
-          color={"black"}
-          size={24}
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        />
-      ) : (
+      {loading &&(<View  >
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={loading}
+          >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <ActivityIndicator size={40}/>
+            
+            </View>
+          </View>
+        </Modal>
+      
+      </View> ) }
         <>
           <View
             style={{
@@ -355,11 +363,29 @@ const PlaceOrderDetailScreen = ({ route }) => {
             <CheckInternet />
           </ScrollView>
         </>
-      )}
+      
     </>
   );
 };
 
 export default PlaceOrderDetailScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  centeredView: {
+   flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+  
+    borderRadius: 20,
+   width:"70%",
+   height:"20%",
+   justifyContent: 'center',
+   alignItems: 'center',
+    
+   
+  },
+});

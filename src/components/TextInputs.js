@@ -68,6 +68,7 @@ const TextInputs = (props) => {
   return (
     <View style={{marginBottom:8,marginTop:8, }}>
       <TextInput
+      maxLength={props.maxLength}
        mode={mode}
         label={label}
         value={value}

@@ -67,6 +67,7 @@ const TrackOrderScreen = ({ route }) => {
   const [driverLong, setDriverLong] = useState("");
   const [driverLat, setDriverLat] = useState("");
   const [driverPhone, setDriverPhone] = useState("");
+  const [mapBounds,setMapBounds]=useState("")
 
   const bottomSheetRef = useRef();
 
@@ -149,23 +150,29 @@ const TrackOrderScreen = ({ route }) => {
         <Titlebar title="Track Order" />
       </View>
       <View style={styles.container}>
-        <Mapbox.MapView style={styles.map}>
+        <Mapbox.MapView style={styles.map}  onLayout={() => {
+    if (mapBounds) {
+      mapRef.current.fitBounds(mapBounds, {
+        edgePadding: { top: 100, right: 100, bottom: 100, left: 100 },
+      });
+    }
+  }}>
           <Mapbox.Camera
             zoomLevel={10}
             centerCoordinate={[
-              // pickup_latitude,
-              // pickup_longitude
               driverLong || pickup_longitude,
               driverLat || pickup_latitude,
             ]}
           />
-          {/* <Mapbox.PointAnnotation id="pickupLocation" coordinate={[ pickup_longitude,pickup_latitude]} >
-            <Mapbox.Callout title="Pickup Location" />
-             </Mapbox.PointAnnotation> */}
           <Mapbox.MarkerView
             id="markerId"
             coordinate={[pickup_longitude, pickup_latitude]}
             anchor={{ x: 0.5, y: 1 }}
+            onInitialized={() => {
+              setMapBounds([
+                [pickup_longitude, pickup_latitude],
+              ]);
+            }}
           >
             <View style={styles.markerContainer}>
               <Image
@@ -175,9 +182,16 @@ const TrackOrderScreen = ({ route }) => {
             </View>
           </Mapbox.MarkerView>
           <Mapbox.MarkerView
-            id="pickupLocation"
+            id="dropLocation"
             coordinate={[delivery_longitude, delivery_latitude]}
             anchor={{ x: 0.5, y: 1 }}
+            onInitialized={() => {
+              setMapBounds((prevBounds) => [
+                ...prevBounds,
+                
+               ,
+              ]);
+            }}
           >
             <View style={styles.markerContainer}>
               <Image
