@@ -191,6 +191,10 @@ const TaskScreen1 = ({ navigation }) => {
           deliverTo,
           checkedItems,
           tokenId: data.order.id,
+          pickupLat,
+          pickupLong,
+          dropLat,
+          dropLong
         });
       } catch (error) {
         console.log(error);

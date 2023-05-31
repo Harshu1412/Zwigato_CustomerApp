@@ -32,6 +32,7 @@ const Payment = () => {
   const [show, setShow] = useState(false);
   const [apiError, setApiError] = useState(null);
   const [authToken, setAuthToken] = useState("");
+  const[loader,setLoader]=useState(true);
   const tokenId = route.params?.tokenId;
   const price = route.params?.price;
   const distance = route.params?.price;
@@ -41,6 +42,7 @@ const Payment = () => {
   });
 
   const getArticles = async () => {
+    setLoader(true);
     const requestOptions = {
       method: "GET",
       headers: {
@@ -55,9 +57,10 @@ const Payment = () => {
       // console.log(json);
       if (json.cards) {
         setItems(json.cards);
-        // console.log(json.cards);
+      setLoader(false);
       }
     } catch (error) {
+      setLoader(false);
       console.log(error);
       if (error.message === "Network request failed") {
         setShow(true);
@@ -238,18 +241,14 @@ const Payment = () => {
         }),
       };
       try {
-        // console.log("mere tak a gya");
+        
         const response = await fetch(
           api + "payment/new_payment_method",
           requestOptions
         );
-        // console.log("Inside Add Card Try block");
-        // console.log(response.ok);
+      
         const data = await response.json();
-        // console.log(data);
-
         if (response.status === 200) {
-          // console.log(data);
           setShow(true);
           setShowNewItemForm(false);
           setApiError("Card Added Successfully!");
@@ -259,7 +258,7 @@ const Payment = () => {
           setCvv("");
           setExpiry("");
         } else if (response.status === 402) {
-          // console.log(data.error.code);
+          
           setShow(true);
           setApiError(`Invalid Card Details - ${data.error.code}`);
           if (data.error.code == "invalid_expiry_year") setExpiryError(true);
@@ -272,11 +271,7 @@ const Payment = () => {
         setIsLoading(false);
       }
       getArticles();
-      // setNewItemName("");
-      // setCardNumber("");
-      // setCvv("");
-      // setExpiry("");
-      // setShowNewItemForm(false);
+     
     }
   };
 
@@ -312,6 +307,18 @@ const Payment = () => {
 
   return (
     <>
+{loader && (
+        <View>
+          <Modal animationType="slide" transparent={true} visible={loader}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <ActivityIndicator size={40} />
+              </View>
+            </View>
+          </Modal>
+        </View>
+      )}
+
       {mainLoading && (
         <ActivityIndicator color={"black"} size={40} style={{ flex: 20 }} />
       )}
@@ -590,3 +597,22 @@ const Payment = () => {
 };
 
 export default Payment;
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+
+    borderRadius: 20,
+    width: "70%",
+    height: "20%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+ 
+});

@@ -37,23 +37,7 @@ flex:1;
 background-color:white
 margin-top:20px;
 `;
-const TopView = styled.View`
-  margin-top: 15px;
-  flex-direction: row;
-  border: 1px;
-  border-color: white;
-  padding: 10px;
-  margin: 10px;
-  width: 95%;
-  elevation: 5;
-  margin: 10px;
-  border-radius: 8px;
-  background-color: white;
-`;
-const MText = styled.Text`
-  fontfamily: "Montserrat_500Medium";
-  margin-left: 35%;
-`;
+
 const AvatarView = styled.View`
   justify-content: center;
   align-items: center;
@@ -114,22 +98,7 @@ const EditProfile = ({ route }) => {
   AsyncStorage.getItem("token").then((token) => {
     setAuthToken(token);
   });
-  // async function getApi() {
-  //   // console.log("fetch profile");
-  //   setMainLoading(true);
-  //   const requestOptions = {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${authToken}`,
-  //     },
-  //   };
-  //   const response = await fetch(api + "get", requestOptions);
-
-  //   const json = await response.json();
-
-  //   return json;
-  // }
+ 
 
   useEffect(() => {
     const fetchData = async () => {

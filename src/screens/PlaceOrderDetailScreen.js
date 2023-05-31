@@ -4,7 +4,8 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  View,Modal
+  View,
+  Modal,
 } from "react-native";
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { TextInput, DefaultTheme } from "react-native-paper";
@@ -18,10 +19,28 @@ import { api } from "../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native";
 import CheckInternet from "../components/CheckInternet";
+import Mapbox from "@rnmapbox/maps";
+
+Mapbox.setWellKnownTileServer("Mapbox");
+
+Mapbox.setAccessToken(
+  "pk.eyJ1IjoiaGFyc2h1MTQxMiIsImEiOiJjbGdtMWN1MHMwMWMxM3FwcGZ3a3p2ajliIn0.sAqxecqbNtP8fVkl_9m9xQ"
+);
 
 const PlaceOrderDetailScreen = ({ route }) => {
-  const { instruction, pickUp, deliverTo, checkedItems, tokenId } =
-    route.params;
+  const {
+    instruction,
+    pickUp,
+    deliverTo,
+    checkedItems,
+    tokenId,
+    pickupLat,
+    pickupLong,
+    dropLat,
+    dropLong,
+  } = route.params;
+
+
   const [isFocused, setIsFocused] = useState(false);
   const [taskdetails, setTaskdetails] = useState();
   const [authToken, setAuthToken] = useState("");
@@ -29,6 +48,7 @@ const PlaceOrderDetailScreen = ({ route }) => {
   const [loading, setLoading] = useState(true);
   const [distanceFee, setDistanceFee] = useState("");
   const [distance, setDistance] = useState("");
+  const [itemPrice, setItemPrice] = useState("");
   AsyncStorage.getItem("token").then((token) => {
     setAuthToken(token);
   });
@@ -50,320 +70,410 @@ const PlaceOrderDetailScreen = ({ route }) => {
     };
     try {
       const response = await fetch(api + "taskdetails", requestOptions);
-      // console.log(JSON.stringify(response));
       const json = await response.json();
       setDistanceFee(json.taskupdate.additional_charge);
       setLoading(false);
       setDistance(json.taskupdate.distance_km);
       setTaskdetails(json.taskupdate);
       setPrice(json.taskupdate.billing_details);
+      itemfee = Math.abs(
+        json.taskupdate.billing_details - json.taskupdate.additional_charge
+      );
+      setItemPrice(itemfee);
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
-    gettaskDetails();
-    // console.log(price);
+    if (
+      authToken !== null &&
+      authToken !== undefined &&
+      authToken.length !== 0
+    ) {
+      gettaskDetails();
+    }
   }, [authToken, tokenId]);
 
   const MapImage = require("../../assets/MapImage.png");
-  // const route = useRoute();
-  // const tokenId = route.params?.tokenId;
-  // console.log("=====TokenId====", tokenId);
-  // const instruction = route.params?.instruction;
-  // const pickUp = route.params?.pickUp;
-  // const deliverTo = route.params?.deliverTo;
-  // const checkedItems = route.params?.checkedItems;
 
   return (
     <>
-      {loading &&(<View  >
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={loading}
-          >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <ActivityIndicator size={40}/>
-            
+      {loading && (
+        <View>
+          <Modal animationType="slide" transparent={true} visible={loading}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <ActivityIndicator size={40} />
+              </View>
             </View>
-          </View>
-        </Modal>
-      
-      </View> ) }
-        <>
+          </Modal>
+        </View>
+      )}
+      <>
+        <View
+          style={{
+            width: "100%",
+            marginTop: 10,
+            backgroundColor: "white",
+            alignSelf: "center",
+            paddingHorizontal: "5%",
+          }}
+        >
+          <Titlebar title={"Order Details"} />
+        </View>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View
             style={{
-              width: "100%",
-              marginTop: 10,
               backgroundColor: "white",
-              alignSelf: "center",
-              paddingHorizontal: "5%",
+              alignItems: "center",
+              flex: 1,
             }}
           >
-            <Titlebar title={"Order Details"} />
-          </View>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <View style={{ marginTop: "1%", width: "92%" }}>
+              <TextInput
+                label="Pickup from"
+                mode="outlined"
+                value={pickUp}
+                editable={false}
+                multiline
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                right={
+                  <TextInput.Icon
+                    icon={() => (
+                      <EvilIcons name="location" size={24} color="black" />
+                    )}
+                  />
+                }
+                theme={{
+                  ...DefaultTheme,
+                  roundness: 10,
+                  colors: { primary: "#0C8A7B", background: "black" },
+                }}
+                style={{
+                  backgroundColor: "white",
+                  borderColor: isFocused ? "#0C8A7B" : "#808080",
+                  color: "black",
+                }}
+              />
+            </View>
+            <View style={{ marginTop: 15, width: "92%" }}>
+              <TextInput
+                label="Deliver to"
+                mode="outlined"
+                value={deliverTo}
+                editable={false}
+                multiline
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                right={
+                  <TextInput.Icon
+                    icon={() => (
+                      <Entypo name="location-pin" size={24} color="orange" />
+                    )}
+                  />
+                }
+                theme={{
+                  ...DefaultTheme,
+                  roundness: 10,
+                  colors: { primary: "#0C8A7B", background: "black" },
+                }}
+                style={{
+                  backgroundColor: "white",
+                  borderColor: isFocused ? "#0C8A7B" : "#808080",
+                  color: "black",
+                }}
+              />
+            </View>
             <View
               style={{
+                padding: 10,
+                flexWrap: "wrap",
+                marginTop: 15,
                 backgroundColor: "white",
+                borderRadius: 8,
+                width: "91%",
+                flexDirection: "row",
                 alignItems: "center",
-                flex: 1,
+                alignSelf: "center",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 4,
               }}
             >
-              <View style={{ marginTop: "1%", width: "92%" }}>
-                <TextInput
-                  label="Pickup from"
-                  mode="outlined"
-                  value={pickUp}
-                  editable={false}
-                  multiline
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  right={
-                    <TextInput.Icon
-                      icon={() => (
-                        <EvilIcons name="location" size={24} color="black" />
-                      )}
-                    />
-                  }
-                  theme={{
-                    ...DefaultTheme,
-                    roundness: 10,
-                    colors: { primary: "#0C8A7B", background: "black" },
-                  }}
-                  style={{
-                    backgroundColor: "white",
-                    borderColor: isFocused ? "#0C8A7B" : "#808080",
-                    color: "black",
-                  }}
-                />
-              </View>
-              <View style={{ marginTop: 15, width: "92%" }}>
-                <TextInput
-                  label="Deliver to"
-                  mode="outlined"
-                  value={deliverTo}
-                  editable={false}
-                  multiline
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  right={
-                    <TextInput.Icon
-                      icon={() => (
-                        <Entypo name="location-pin" size={24} color="orange" />
-                      )}
-                    />
-                  }
-                  theme={{
-                    ...DefaultTheme,
-                    roundness: 10,
-                    colors: { primary: "#0C8A7B", background: "black" },
-                  }}
-                  style={{
-                    backgroundColor: "white",
-                    borderColor: isFocused ? "#0C8A7B" : "#808080",
-                    color: "black",
-                  }}
-                />
-              </View>
-              <View
+              <Text
                 style={{
-                  padding: 10,
+                  fontWeight: "400",
+                  fontSize: 14,
+                  fontFamily: "Montserrat_400Regular",
+                }}
+              >
+                Item Type :
+              </Text>
+              <Text
+                style={{
                   flexWrap: "wrap",
-                  marginTop: 15,
-                  backgroundColor: "white",
-                  borderRadius: 8,
-                  width: "91%",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  alignSelf: "center",
-                  shadowColor: "#000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-                  elevation: 4,
+                  fontFamily: "Montserrat_400Regular",
                 }}
               >
+                {checkedItems.join(",  ")}
+              </Text>
+            </View>
+            <View
+              style={{
+                width: "90%",
+                // height: 125,
+                paddingVertical: 10,
+                borderWidth: 1,
+                marginTop: 15,
+                borderRadius: 8,
+                borderColor: "#D8D6D4",
+              }}
+            >
+              <View style={{ marginTop: 13, marginLeft: 16 }}>
                 <Text
                   style={{
-                    // marginTop: 10,
-                    // marginBottom: 5,
-                    fontWeight: "400",
+                    fontFamily: "Montserrat_600SemiBold",
                     fontSize: 14,
-                    fontFamily: "Montserrat_400Regular",
                   }}
                 >
-                  Item Type :
-                </Text>
-                <Text
-                  style={{
-                    flexWrap: "wrap",
-                    fontFamily: "Montserrat_400Regular",
-                  }}
-                >
-                  {checkedItems.join(",  ")}
+                  Billing Details
                 </Text>
               </View>
-              <View
-                style={{
-                  width: "90%",
-                  // height: 125,
-                  paddingVertical: 10,
-                  borderWidth: 1,
-                  marginTop: 15,
-                  borderRadius: 8,
-                  borderColor: "#D8D6D4",
-                }}
-              >
-                <View style={{ marginTop: 13, marginLeft: 16 }}>
-                  <Text
-                    style={{
-                      fontFamily: "Montserrat_600SemiBold",
-                      fontSize: 14,
-                    }}
-                  >
-                    Billing Details
-                  </Text>
-                </View>
-                <View style={{ flexDirection: "row" }}>
-                  <View
-                    style={{
-                      borderBottomWidth: 1,
-                      marginLeft: 16,
-                      marginTop: 10,
-                      borderStyle: "dotted",
-                      borderColor: "#B4B4B4",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        marginLeft: 3,
-                        color: "#0AB7EE",
-                        fontWeight: "500",
-                        fontSize: 10,
-                        fontFamily: "Montserrat_400Regular",
-                      }}
-                    >
-                      Delievery fee for {distance} km
-                    </Text>
-                  </View>
-                  <View
-                    style={{ marginTop: 16, position: "absolute", right: 25 }}
-                  >
-                    <Text
-                      style={{
-                        fontWeight: "600",
-                        fontSize: 14,
-                        fontFamily: "Montserrat_600SemiBold",
-                      }}
-                    >
-                      ${distanceFee}
-                    </Text>
-                  </View>
-                </View>
+              <View style={{ flexDirection: "row" }}>
                 <View
                   style={{
-                    borderBottomWidth: 1,
-                    marginTop: 16,
                     marginLeft: 16,
-                    marginRight: 16,
-                    borderColor: "#B4B4B4",
+                    marginTop: 10,
                   }}
-                ></View>
-                <View style={{ flexDirection: "row" }}>
-                  <View style={{ marginLeft: 16, marginTop: 14 }}>
-                    <Text
-                      style={{
-                        fontFamily: "Montserrat_600SemiBold",
-                        fontSize: 14,
-                      }}
-                    >
-                      To Pay
-                    </Text>
-                  </View>
-                  <View
-                    style={{ marginTop: 14, position: "absolute", right: 25 }}
-                  >
-                    <Text
-                      style={{
-                        fontFamily: "Montserrat_600SemiBold",
-                        fontSize: 14,
-                      }}
-                    >
-                      $ {price}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-              <View style={{ marginTop: 14, alignItems: "center" }}>
-                <Image
-                  style={{ width: 370, height: 130, borderRadius: 15 }}
-                  source={MapImage}
-                />
-              </View>
-              <View
-                style={{
-                  marginTop: 15,
-                  backgroundColor: "white",
-                  borderRadius: 8,
-                  width: "90%",
-                  alignSelf: "center",
-                  shadowColor: "#000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-                  elevation: 4,
-                }}
-              >
-                <View style={{ marginTop: 13, marginLeft: 15 }}>
+                >
                   <Text
                     style={{
+                      marginLeft: 3,
+                      color: "#000",
+                      fontWeight: "500",
                       fontSize: 14,
-                      fontFamily: "Montserrat_600SemiBold",
-                    }}
-                  >
-                    Instruction
-                  </Text>
-                </View>
-                <View style={{ marginTop: 5, marginLeft: 15, marginBottom: 5 }}>
-                  <Text
-                    style={{
-                      fontSize: 12,
                       fontFamily: "Montserrat_400Regular",
                     }}
                   >
-                    {instruction}
+                    Item Fee
+                  </Text>
+                </View>
+                <View
+                  style={{ marginTop: 10, position: "absolute", right: 25 }}
+                >
+                  <Text
+                    style={{
+                      fontWeight: "600",
+                      fontSize: 14,
+                      fontFamily: "Montserrat_600SemiBold",
+                    }}
+                  >
+                    $ {itemPrice}
                   </Text>
                 </View>
               </View>
+              <View style={{ flexDirection: "row" }}>
+                <View
+                  style={{
+                    borderBottomWidth: 1,
+                    marginLeft: 16,
+                    marginTop: 10,
+                    borderStyle: "dotted",
+                    borderColor: "#B4B4B4",
+                  }}
+                >
+                  <Text
+                    style={{
+                      marginLeft: 3,
+                      color: "#0AB7EE",
+                      fontWeight: "500",
+                      fontSize: 14,
+                      fontFamily: "Montserrat_400Regular",
+                    }}
+                  >
+                    Delivery fee for {distance} km
+                  </Text>
+                </View>
+                <View
+                  style={{ marginTop: 10, position: "absolute", right: 25 }}
+                >
+                  <Text
+                    style={{
+                      fontWeight: "600",
+                      fontSize: 14,
+                      fontFamily: "Montserrat_600SemiBold",
+                    }}
+                  >
+                    + $ {distanceFee}
+                  </Text>
+                </View>
+              </View>
+
               <View
                 style={{
-                  marginTop: "auto",
-                  paddingVertical: 10,
-                  width: "90%",
+                  borderBottomWidth: 1,
+                  marginTop: 16,
+                  marginLeft: 16,
+                  marginRight: 16,
+                  borderColor: "#B4B4B4",
                 }}
-              >
-                <Buttons
-                  Name={"Payment"}
-                  press={"Pay"}
-                  tokenId={tokenId}
-                  price={price}
-                  distance={distance}
-                />
+              ></View>
+              <View style={{ flexDirection: "row" }}>
+                <View style={{ marginLeft: 16, marginTop: 14 }}>
+                  <Text
+                    style={{
+                      fontFamily: "Montserrat_600SemiBold",
+                      fontSize: 14,
+                    }}
+                  >
+                    To Pay
+                  </Text>
+                </View>
+                <View
+                  style={{ marginTop: 14, position: "absolute", right: 25 }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "Montserrat_600SemiBold",
+                      fontSize: 14,
+                    }}
+                  >
+                    $ {price}
+                  </Text>
+                </View>
               </View>
             </View>
-            <CheckInternet />
-          </ScrollView>
-        </>
-      
+            <View
+              style={{
+                width: "100%",
+                height: 200,
+                marginTop: 14,
+                alignItems: "center",
+              }}
+            >
+              <Mapbox.MapView style={{ width: "90%", height: "100%" }}>
+                <Mapbox.Camera
+                  zoomLevel={13}
+                  centerCoordinate={[dropLong, dropLat]}
+                />
+
+                <Mapbox.MarkerView
+                  id="markerId"
+                  coordinate={[dropLong, dropLat]}
+                  anchor={{ x: 0.5, y: 1 }}
+                >
+                  <View style={styles.markerContainer}>
+                    <Image
+                      source={require("../../assets/hom-loc.png")}
+                      style={styles.markerImage}
+                    />
+                  </View>
+                </Mapbox.MarkerView>
+
+                <Mapbox.MarkerView
+                  id="markerId"
+                  coordinate={[pickupLong, pickupLat]}
+                  anchor={{ x: 0.5, y: 1 }}
+                >
+                  <View style={styles.markerContainer}>
+                    <Image
+                      source={require("../../assets/pickup-loc.png")}
+                      style={styles.markerImage}
+                    />
+                  </View>
+                </Mapbox.MarkerView>
+
+                <Mapbox.ShapeSource
+                  id="lineSource"
+                  shape={{
+                    type: "FeatureCollection",
+                    features: [
+                      {
+                        type: "Feature",
+                        geometry: {
+                          type: "LineString",
+                          coordinates: [
+                            [pickupLong, pickupLat],
+                            [dropLong, dropLat],
+                          ],
+                        },
+                      },
+                    ],
+                  }}
+                >
+                  <Mapbox.LineLayer
+                    id="lineLayer"
+                    style={{
+                      lineWidth: 3,
+                      lineColor: "blue",
+                    }}
+                  />
+                </Mapbox.ShapeSource>
+              </Mapbox.MapView>
+            </View>
+            <View
+              style={{
+                marginTop: 15,
+                backgroundColor: "white",
+                borderRadius: 8,
+                width: "90%",
+                alignSelf: "center",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 4,
+              }}
+            >
+              <View style={{ marginTop: 13, marginLeft: 15 }}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontFamily: "Montserrat_600SemiBold",
+                  }}
+                >
+                  Instruction
+                </Text>
+              </View>
+              <View style={{ marginTop: 5, marginLeft: 15, marginBottom: 5 }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontFamily: "Montserrat_400Regular",
+                  }}
+                >
+                  {instruction}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                marginTop: "auto",
+                paddingVertical: 10,
+                width: "90%",
+              }}
+            >
+              <Buttons
+                Name={"Payment"}
+                press={"Pay"}
+                tokenId={tokenId}
+                price={price}
+                distance={distance}
+              />
+            </View>
+          </View>
+          <CheckInternet />
+        </ScrollView>
+      </>
     </>
   );
 };
@@ -372,20 +482,28 @@ export default PlaceOrderDetailScreen;
 
 const styles = StyleSheet.create({
   centeredView: {
-   flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 22,
   },
   modalView: {
     margin: 20,
-  
+
     borderRadius: 20,
-   width:"70%",
-   height:"20%",
-   justifyContent: 'center',
-   alignItems: 'center',
-    
-   
+    width: "70%",
+    height: "20%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  markerContainer: {
+    height: 50,
+    width: 50,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  markerImage: {
+    height: 40,
+    width: 40,
   },
 });

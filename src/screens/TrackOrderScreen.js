@@ -25,24 +25,7 @@ Mapbox.setWellKnownTileServer("Mapbox");
 Mapbox.setAccessToken(
   "pk.eyJ1IjoiaGFyc2h1MTQxMiIsImEiOiJjbGdtMWN1MHMwMWMxM3FwcGZ3a3p2ajliIn0.sAqxecqbNtP8fVkl_9m9xQ"
 );
-const SBView = styled.View`
-  flex-direction: row;
-  // text-align:center;
-  // align-content:center;
-  // jusitfy-content:center;
-  margin-horizontal: 5%;
-  margin-top: 20px;
-  padding: 10px;
-  border: 1px;
-  border-color: white;
-  border-radius: 8px;
-  background-color: white;
-  elevation: 5;
-`;
-const AvatarView = styled.View`
-  margin-left: 26%;
-  margin-right: 3%;
-`;
+
 
 const bikeimage = require("../../assets/bike.png");
 const TrackOrderScreen = ({ route }) => {
@@ -150,13 +133,7 @@ const TrackOrderScreen = ({ route }) => {
         <Titlebar title="Track Order" />
       </View>
       <View style={styles.container}>
-        <Mapbox.MapView style={styles.map}  onLayout={() => {
-    if (mapBounds) {
-      mapRef.current.fitBounds(mapBounds, {
-        edgePadding: { top: 100, right: 100, bottom: 100, left: 100 },
-      });
-    }
-  }}>
+        <Mapbox.MapView style={styles.map}  >
           <Mapbox.Camera
             zoomLevel={10}
             centerCoordinate={[
@@ -216,7 +193,6 @@ const TrackOrderScreen = ({ route }) => {
             </Mapbox.MarkerView>
           )}
 
-          {/* <Mapbox.PointAnnotation id="pickupLocation" coordinate={[delivery_longitude, delivery_latitude]} /> */}
         </Mapbox.MapView>
         <Image source={bikeimage} style={{ width: 32, height: 32 }} />
       </View>
@@ -246,7 +222,6 @@ const TrackOrderScreen = ({ route }) => {
 export default TrackOrderScreen;
 const styles = StyleSheet.create({
   container: {
-    // height:"100%",
     position: "relative",
     flex: 1,
   },

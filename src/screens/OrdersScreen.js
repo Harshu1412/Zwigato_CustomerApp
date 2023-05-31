@@ -153,7 +153,7 @@ export const OrdersScreen = ({ navigation }) => {
   }, [list]);
 
   return (
-    <View flex={1}>
+    <View flex={1} marginTop={10}>
       <View marginHorizontal="5%">
         <Titlebar title="Orders" />
       </View>
