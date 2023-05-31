@@ -284,10 +284,7 @@ const TaskScreen1 = ({ navigation }) => {
                 alignSelf: 'center',
                 
               }}
-
-
               />
-
             </View>
           </View>
         </Modal>

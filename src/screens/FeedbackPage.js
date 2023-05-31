@@ -4,11 +4,11 @@ import {
   View,
   Image,
   TouchableOpacity,
-  ScrollView,
+  ScrollView,Dimensions,ActivityIndicator
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { Snackbar } from "react-native-paper";
+import {  Snackbar } from "react-native-paper";
 import Titlebar from "../components/TitileBar";
 import CustomOutlinedTextInput from "../components/CustomOutlinedTextInput";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,6 +17,9 @@ import { api } from "../../Api";
 import App from "../../App";
 import CheckInternet from "../components/CheckInternet";
 import { ToastAndroid } from "react-native";
+
+const deviceHeight=Dimensions.get("window").height
+
 
 const Feedback = ({ route }) => {
   const { driver_orderId, fetchData } = route.params;
@@ -27,7 +30,8 @@ const Feedback = ({ route }) => {
   const [pressed, setPressed] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [driverName, setDriverName] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState("")
+  const [loader,setLoader]=useState(true);
   AsyncStorage.getItem("token").then((token) => {
     setAuthToken(token);
   });
@@ -52,7 +56,7 @@ const Feedback = ({ route }) => {
   };
 
   const handleSubmit = async () => {
-    if (rating === 0) {
+    if (rating === 0 || comment.length ===0 ) {
       setSnackbarVisible(true);
     } else {
       const requestOptions = {
@@ -90,10 +94,20 @@ const Feedback = ({ route }) => {
   };
 
   useEffect(() => {
-    getDriverData();
-  }, [authToken, driverName, image]);
+    if (
+      authToken !== null &&
+      authToken !== undefined &&
+      authToken.length !== 0
+     
+    ){
+      getDriverData();
+    }
+   
+  }, [authToken]);
 
   const getDriverData = async () => {
+   setLoader(true)
+    console.log("calls")
     // console.log("a gya mai", driver_orderId);
     const requestOptions = {
       method: "GET",
@@ -112,16 +126,20 @@ const Feedback = ({ route }) => {
           // console.log("f===================sfsdfsd", data);
           setDriverName(data.data.name);
           setImage(api + data.data.photo_uri);
+          setLoader(false);
         });
       });
     } catch (error) {
       console.error("=============", error);
+      setLoader(false)
     }
   };
 
   return (
     <>
-      <View style={{ width: "90%", marginTop: 5, alignSelf: "center" }}>
+    {loader ? <ActivityIndicator size={24} style={{flex:1}}/> : (
+      <>
+        <View style={{ width: "90%", marginTop: 5, alignSelf: "center" }}>
         <Titlebar title={"Feedback"} />
       </View>
       <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}>
@@ -182,7 +200,7 @@ const Feedback = ({ route }) => {
           />
         </View>
 
-        <View marginBottom={10}></View>
+        <View style={{ position:"absolute",top:deviceHeight-140,width:"100%",justifyContent: "center", alignItems: "center",}}> 
 
         <TouchableOpacity
           onPress={() => handleSubmit()}
@@ -191,14 +209,14 @@ const Feedback = ({ route }) => {
             height: 50,
             width: "90%",
             borderRadius: 7,
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: "auto",
+            alignItems:"center",
+            justifyContent:"center",
             marginVertical: 10,
           }}
         >
           <Text style={{ color: "white" }}>Submit</Text>
         </TouchableOpacity>
+        </View>
         <Snackbar
           visible={snackbarVisible}
           onDismiss={() => setSnackbarVisible(false)}
@@ -210,6 +228,10 @@ const Feedback = ({ route }) => {
         </Snackbar>
         <CheckInternet />
       </ScrollView>
+      </>
+
+    )}
+    
     </>
   );
 };
