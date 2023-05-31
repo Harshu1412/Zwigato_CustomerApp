@@ -187,15 +187,12 @@ const Payment = () => {
     if (expiry.length == 7) {
       const [expiryMonth, expiryYear] = expiry.split("/");
       const currentYear = new Date().getFullYear().toString();
-      // console.log("=====================-=-=-=-", currentYear);
       const currentMonth = new Date().getMonth() + 1;
       console.log(typeof expiryMonth);
-      // console.log("sdfghjklygrdr6dr6drr", expiryMonth, expiryYear);
       if (parseInt(expiryMonth, 10) > 12 || expiryMonth === "00") {
         console.log("yeh condition check bhi ho rahi hai ???");
         setExpiryError(true);
       }
-
       if (parseInt(expiryYear, 10) < parseInt(currentYear, 10)) {
         setExpiryError(true);
       } else if (

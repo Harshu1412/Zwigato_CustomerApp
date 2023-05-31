@@ -26,12 +26,14 @@ export const OrderDetailScreen = ({ route }) => {
     distance,
     completed_timing,
     addtional_charge,
+    instruction
   } = route.params;
+  // console.log(completed_timing);
   const navigation = useNavigation();
   return (
     <View marginTop={10} flex={1}>
       <View marginHorizontal="5%">
-        <Titlebar title="Order Detail" />
+        <Titlebar title="Order Details" />
       </View>
       {/* <Header title="Order details" /> */}
       <View paddingHorizontal={25} marginVertical={20}>
@@ -112,15 +114,56 @@ export const OrderDetailScreen = ({ route }) => {
           </Text>
         </View>
 
-        <View marginBottom={10} marginLeft={18}>
+        {completed_timing !== "" &&
+          <View marginBottom={10} marginLeft={18}>
+            <Text
+              style={{
+                color: "#8E8EA1",
+                fontSize: 12,
+                fontFamily: "Montserrat_400Regular",
+              }}
+            >
+              {completed_timing}
+            </Text>
+          </View>
+        }
+      </View>
+
+      <View
+        style={{
+          // marginTop: 15,
+          backgroundColor: "white",
+          borderRadius: 8,
+          marginHorizontal:11,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 4,
+          marginBottom:10
+        }}
+      >
+        <View style={{ marginTop: 10, marginLeft: 15 }}>
           <Text
             style={{
-              color: "#8E8EA1",
+              fontSize: 14,
+              fontFamily: "Montserrat_600SemiBold",
+            }}
+          >
+            Instruction :
+          </Text>
+        </View>
+        <View style={{  marginLeft: 15, marginBottom: 5 }}>
+          <Text
+            style={{
               fontSize: 12,
               fontFamily: "Montserrat_400Regular",
             }}
           >
-            {completed_timing}
+            {instruction}
           </Text>
         </View>
       </View>
@@ -129,7 +172,21 @@ export const OrderDetailScreen = ({ route }) => {
           <Text style={{ fontFamily: "Montserrat_400Regular" }}>
             Billing Detials
           </Text>
+          
           <View style={styles.flex}>
+            <Text
+              style={{
+                fontFamily: "Montserrat_400Regular",
+                color: "#000",
+              }}
+            >
+              Items Fee
+            </Text>
+            <Text style={{ fontFamily: "Montserrat_600SemiBold" }}>
+              $ {Math.abs(addtional_charge - Billing_Details)}
+            </Text>
+          </View>
+          <View style={styles.flex2}>
             <Text
               style={{
                 borderBottomWidth: 1,
@@ -142,7 +199,7 @@ export const OrderDetailScreen = ({ route }) => {
               Delivery fee for {distance} km
             </Text>
             <Text style={{ fontFamily: "Montserrat_600SemiBold" }}>
-              $ {addtional_charge}
+             + $ {addtional_charge}
             </Text>
           </View>
           <View
@@ -321,5 +378,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginVertical: 10,
+  },
+  flex2: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
   },
 });

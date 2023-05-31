@@ -31,6 +31,7 @@ export const OrderCard = (props) => {
     order_pin,
     driver_feedback,
     addtional_charge,
+    instruction
   } = props;
   // console.log(addtional_charge);
   const itemtype = item_type;
@@ -215,6 +216,7 @@ export const OrderCard = (props) => {
                 distance,
                 completed_timing,
                 addtional_charge,
+                instruction
               });
             }}
           >

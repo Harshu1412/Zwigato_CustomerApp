@@ -135,7 +135,7 @@ export const OrdersScreen = ({ navigation }) => {
     const finalFormattedDate = `${formattedDate}, ${formattedTime}`;
     return finalFormattedDate;
   };
-  // console.log(orders[0].additional_charge);
+  // console.log(orders[0].instruction);
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
@@ -153,7 +153,7 @@ export const OrdersScreen = ({ navigation }) => {
   }, [list]);
 
   return (
-    <View flex={1} marginTop={10}>
+    <View flex={1}>
       <View marginHorizontal="5%">
         <Titlebar title="Orders" />
       </View>
@@ -195,6 +195,7 @@ export const OrdersScreen = ({ navigation }) => {
               order_pin={order.order_pin}
               fetchData={fetchData}
               addtional_charge={order.additional_charge}
+              instruction={order.instruction}
             />
           ))}
         </ScrollView>
