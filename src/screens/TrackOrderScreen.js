@@ -42,9 +42,7 @@ const TrackOrderScreen = ({ route }) => {
     distance,
   } = route.params;
   const [driverPhoto, setDriverPhoto] = useState("");
-  const [carNumber, setCarNumber] = useState("ABC-123");
-  const [pickupLocation, setPickupLocation] = useState("123 Main Street");
-  const [dropLocation, setDropLocation] = useState("456 Park Avenue");
+  const [carNumber, setCarNumber] = useState("ABC-123")
   const [authToken, setAuthToken] = useState("");
   const [driverName, setDriverName] = useState("");
   const [driverLong, setDriverLong] = useState("");
@@ -115,7 +113,9 @@ const TrackOrderScreen = ({ route }) => {
         requestOptions
       ).then((response) => { 
         response.json().then((data) => {
-          setDriverName(data.data.name);
+          const firstName=(data.data.name).split(" ")[0]
+          setDriverName(firstName);
+          // setDriverName(data.data.name);
           setDriverPhone(data.data.phone);
           setDriverPhoto(data.data.photo_uri);
         });

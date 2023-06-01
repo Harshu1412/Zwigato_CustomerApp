@@ -125,7 +125,10 @@ const Feedback = ({ route }) => {
         console.log(response.ok);
         response.json().then((data) => {
           // console.log("f===================sfsdfsd", data);
-          setDriverName(data.data.name);
+          
+          const firstName=(data.data.name).split(" ")[0]
+          setDriverName(firstName);
+          // setDriverName(data.data.name);
           setImage(api + data.data.photo_uri);
           setLoader(false);
         });

@@ -146,7 +146,8 @@ const MainScreen = () => {
       const json = await response.json();
       // console.log(json);
       if (json.data.name) {
-        setName(json.data.name);
+        const firstName=(json.data.name).split(" ")[0]
+        setName(firstName);
         setPhoto(api + json.data.photo_uri);
         // console.log(api+json.data.photo_uri);
         AsyncStorage.setItem("name", json.data.name);
@@ -241,7 +242,7 @@ const MainScreen = () => {
                 />
               )}
             </View>
-
+            
             <Text
               style={{
                 fontFamily: "Montserrat_400Regular",

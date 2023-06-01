@@ -37,7 +37,8 @@ const HeaderPic = () => {
     try {
       const response = await fetch(`${api}get`, requestOptions);
       const json = await response.json();
-      setName(json.data.name);
+      const firstName=(json.data.name).split(" ")[0]
+        setName(firstName);
       if (json.data.name) {
         AsyncStorage.setItem("name", json.data.name);
       } else {

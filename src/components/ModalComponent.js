@@ -109,7 +109,8 @@ export const Sidebar = ({ isOpen, onClose }) => {
       // console.log(response.ok);
       const json = await response.json();
       if (json.data.name) {
-        setName(json.data.name);
+        const firstName=(json.data.name).split(" ")[0]
+        setName(firstName);
         setPhoto(api+json.data.photo_uri)
         AsyncStorage.setItem("name", json.data.name);
         AsyncStorage.setItem("-photo", api+json.data.photo_uri);

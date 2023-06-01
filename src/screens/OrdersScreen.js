@@ -3,6 +3,7 @@ import {
   ScrollView,
   ActivityIndicator,
   RefreshControl,
+  FlatList
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Container, CenteredView } from "../styles/styles";
@@ -151,6 +152,33 @@ export const OrdersScreen = ({ navigation }) => {
     });
     return unsubscribe;
   }, [list]);
+  const renderItems = (item) => {
+    return (
+      <OrderCard
+        key={item.order_id}
+        user_id={item.user_id}
+        orderId={item.order_id}
+        item_type={item.category_item_type}
+        status={item.status || item.order_status}
+        Pickup_from={item.pickup_from}
+        Deliver_To={item.deliver_to}
+        Billing_Details={item.billing_details}
+        timing={convertDate(item.createdAt)}
+        pickup_latitude={item.pickup_latitude}
+        pickup_longitude={item.pickup_longitude}
+        delivery_latitude={item.delivery_latitude}
+        delivery_longitude={item.delivery_longitude}
+        driver_id={item.driver_id}
+        distance={item.distance_km}
+        driver_feedback={item.driver_feedback}
+        completed_timing={item.order_completed_time || ""}
+        order_pin={item.order_pin}
+        fetchData={fetchData}
+        addtional_charge={item.additional_charge}
+        instruction={item.instruction}
+      />
+    );
+  };
 
   return (
     <View flex={1}>
@@ -167,38 +195,48 @@ export const OrdersScreen = ({ navigation }) => {
           <Text>No Order Yet! Place an order!!!</Text>
         </CenteredView>
       ) : (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          {orders.map((order) => (
-            <OrderCard
-              key={order.order_id}
-              user_id={order.user_id}
-              orderId={order.order_id}
-              item_type={order.category_item_type}
-              status={order.status || order.order_status}
-              Pickup_from={order.pickup_from}
-              Deliver_To={order.deliver_to}
-              Billing_Details={order.billing_details}
-              timing={convertDate(order.createdAt)}
-              pickup_latitude={order.pickup_latitude}
-              pickup_longitude={order.pickup_longitude}
-              delivery_latitude={order.delivery_latitude}
-              delivery_longitude={order.delivery_longitude}
-              driver_id={order.driver_id}
-              distance={order.distance_km}
-              driver_feedback={order.driver_feedback}
-              completed_timing={order.order_completed_time || ""}
-              order_pin={order.order_pin}
-              fetchData={fetchData}
-              addtional_charge={order.additional_charge}
-              instruction={order.instruction}
-            />
-          ))}
-        </ScrollView>
+        // <ScrollView
+        //   showsVerticalScrollIndicator={false}
+        //   refreshControl={
+        //     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        //   }
+        // >
+        //   {orders.map((order) => (
+        //     <OrderCard
+        //       key={order.order_id}
+        //       user_id={order.user_id}
+        //       orderId={order.order_id}
+        //       item_type={order.category_item_type}
+        //       status={order.status || order.order_status}
+        //       Pickup_from={order.pickup_from}
+        //       Deliver_To={order.deliver_to}
+        //       Billing_Details={order.billing_details}
+        //       timing={convertDate(order.createdAt)}
+        //       pickup_latitude={order.pickup_latitude}
+        //       pickup_longitude={order.pickup_longitude}
+        //       delivery_latitude={order.delivery_latitude}
+        //       delivery_longitude={order.delivery_longitude}
+        //       driver_id={order.driver_id}
+        //       distance={order.distance_km}
+        //       driver_feedback={order.driver_feedback}
+        //       completed_timing={order.order_completed_time || ""}
+        //       order_pin={order.order_pin}
+        //       fetchData={fetchData}
+        //       addtional_charge={order.additional_charge}
+        //       instruction={order.instruction}
+        //     />
+        //   ))}
+        // </ScrollView>
+        <FlatList
+  data={orders}
+  keyExtractor={(item) => item.order_id}
+  showsVerticalScrollIndicator={false}
+  refreshControl={
+    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+  }
+  renderItem={({ item }) => renderItems(item)}
+/>
+
       )}
       <CheckInternet />
       <StatusBar style="dark" />
