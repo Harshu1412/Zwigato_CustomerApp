@@ -6,6 +6,7 @@ import {
   Text,
   View,
   Modal,
+  Dimensions,
 } from "react-native";
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { TextInput, DefaultTheme } from "react-native-paper";
@@ -20,6 +21,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native";
 import CheckInternet from "../components/CheckInternet";
 import Mapbox from "@rnmapbox/maps";
+import Maps from "../components/Maps";
 
 Mapbox.setWellKnownTileServer("Mapbox");
 
@@ -39,7 +41,6 @@ const PlaceOrderDetailScreen = ({ route }) => {
     dropLat,
     dropLong,
   } = route.params;
-
 
   const [isFocused, setIsFocused] = useState(false);
   const [taskdetails, setTaskdetails] = useState();
@@ -112,7 +113,7 @@ const PlaceOrderDetailScreen = ({ route }) => {
       <>
         <View
           style={{
-            width: "100%",
+            width: "103%",
             marginTop: 10,
             backgroundColor: "white",
             alignSelf: "center",
@@ -121,7 +122,7 @@ const PlaceOrderDetailScreen = ({ route }) => {
         >
           <Titlebar title={"Order Details"} />
         </View>
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <ScrollView contentContainerStyle={{}}>
           <View
             style={{
               backgroundColor: "white",
@@ -192,7 +193,7 @@ const PlaceOrderDetailScreen = ({ route }) => {
                 marginTop: 15,
                 backgroundColor: "white",
                 borderRadius: 8,
-                width: "91%",
+                width: "92%",
                 flexDirection: "row",
                 alignItems: "center",
                 alignSelf: "center",
@@ -226,8 +227,7 @@ const PlaceOrderDetailScreen = ({ route }) => {
             </View>
             <View
               style={{
-                width: "90%",
-                // height: 125,
+                width: "92%",      
                 paddingVertical: 10,
                 borderWidth: 1,
                 marginTop: 15,
@@ -349,80 +349,37 @@ const PlaceOrderDetailScreen = ({ route }) => {
                 </View>
               </View>
             </View>
+          </View>
+          <View
+            style={{
+              backgroundColor: "white",
+              alignItems: "center",
+              flex: 1,
+            }}
+          >
             <View
               style={{
                 width: "100%",
                 height: 200,
                 marginTop: 14,
                 alignItems: "center",
+                
+             
               }}
             >
-              <Mapbox.MapView style={{ width: "90%", height: "100%" }}>
-                <Mapbox.Camera
-                  zoomLevel={13}
-                  centerCoordinate={[dropLong, dropLat]}
-                />
-
-                <Mapbox.MarkerView
-                  id="markerId"
-                  coordinate={[dropLong, dropLat]}
-                  anchor={{ x: 0.5, y: 1 }}
-                >
-                  <View style={styles.markerContainer}>
-                    <Image
-                      source={require("../../assets/hom-loc.png")}
-                      style={styles.markerImage}
-                    />
-                  </View>
-                </Mapbox.MarkerView>
-
-                <Mapbox.MarkerView
-                  id="markerId"
-                  coordinate={[pickupLong, pickupLat]}
-                  anchor={{ x: 0.5, y: 1 }}
-                >
-                  <View style={styles.markerContainer}>
-                    <Image
-                      source={require("../../assets/pickup-loc.png")}
-                      style={styles.markerImage}
-                    />
-                  </View>
-                </Mapbox.MarkerView>
-
-                <Mapbox.ShapeSource
-                  id="lineSource"
-                  shape={{
-                    type: "FeatureCollection",
-                    features: [
-                      {
-                        type: "Feature",
-                        geometry: {
-                          type: "LineString",
-                          coordinates: [
-                            [pickupLong, pickupLat],
-                            [dropLong, dropLat],
-                          ],
-                        },
-                      },
-                    ],
-                  }}
-                >
-                  <Mapbox.LineLayer
-                    id="lineLayer"
-                    style={{
-                      lineWidth: 3,
-                      lineColor: "blue",
-                    }}
-                  />
-                </Mapbox.ShapeSource>
-              </Mapbox.MapView>
+             <Maps
+              pickupLong={pickupLong}
+              pickupLat={pickupLat}
+              dropLong={dropLong}
+              dropLat={dropLat}
+             />
             </View>
             <View
               style={{
                 marginTop: 15,
                 backgroundColor: "white",
                 borderRadius: 8,
-                width: "90%",
+                width: "92%",
                 alignSelf: "center",
                 shadowColor: "#000",
                 shadowOffset: {
@@ -459,7 +416,7 @@ const PlaceOrderDetailScreen = ({ route }) => {
               style={{
                 marginTop: "auto",
                 paddingVertical: 10,
-                width: "90%",
+                width: "92%",
               }}
             >
               <Buttons

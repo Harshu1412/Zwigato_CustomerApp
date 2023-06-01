@@ -6,7 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   KeyboardAvoidingView,
-  BackHandler, Modal, Pressable, Alert, ScrollView,Dimensions
+  BackHandler, Modal, Pressable, Alert, ScrollView,Dimensions,ActivityIndicator
 
 } from "react-native";
 import { api } from "../../Api";
@@ -48,18 +48,19 @@ const TaskScreen1 = ({ navigation }) => {
   const [pickupLat, setPickupLat] = useState("")
   const [dropLong, setDropLong] = useState("")
   const [dropLat, setDropLat] = useState("")
+  const [loader,setLoader]=useState(true)
   const MAX_WORDS = 50;
 
   const [colorList, setColorList] = useState([]);
   const [tokenId, setTokenId] = useState("");
   const getItems = async () => {
+    setLoader(true);
     try {
       const response = await fetch(api + "Order/Category");
       // console.log(response);
       const json = await response.json();
       setColorList(json.data);
-      // console.log(json);
-      // console.log(colorList);
+      setLoader(false);
     } catch (error) {
       console.log(error);
     }
@@ -205,6 +206,17 @@ const TaskScreen1 = ({ navigation }) => {
 
   return (
     <>
+     {loader && (
+        <View>
+          <Modal animationType="slide" transparent={true} visible={loader}>
+            <View style={styles.centeredVieW}>
+              <View style={styles.modalVieW}>
+                <ActivityIndicator size={40} />
+              </View>
+            </View>
+          </Modal>
+        </View>
+      )}
       <View style={{ width: "100%", marginTop: 10, alignSelf: 'center', backgroundColor: 'white', paddingHorizontal: "5%" }}>
         <Titlebar title={"Task"} />
       </View>
@@ -612,4 +624,20 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
+  centeredVieW: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalVieW: {
+    margin: 20,
+
+    borderRadius: 20,
+    width: "70%",
+    height: "20%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
 });

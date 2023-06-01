@@ -32,7 +32,7 @@ const Payment = () => {
   const [show, setShow] = useState(false);
   const [apiError, setApiError] = useState(null);
   const [authToken, setAuthToken] = useState("");
-  const[loader,setLoader]=useState(true);
+  const [loader, setLoader] = useState(true);
   const tokenId = route.params?.tokenId;
   const price = route.params?.price;
   const distance = route.params?.price;
@@ -52,12 +52,12 @@ const Payment = () => {
     };
     try {
       const response = await fetch(api + "payment/cards", requestOptions);
-      console.log(response.ok);
+
       const json = await response.json();
-      // console.log(json);
+
       if (json.cards) {
         setItems(json.cards);
-      setLoader(false);
+        setLoader(false);
       }
     } catch (error) {
       setLoader(false);
@@ -74,8 +74,6 @@ const Payment = () => {
   useEffect(() => {
     getArticles();
   }, [authToken, tokenId]);
-
-  // console.log("fdsfs",items);
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [newItemName, setNewItemName] = useState("");
@@ -113,14 +111,10 @@ const Payment = () => {
         task_id: tokenId,
       }),
     };
-    // console.log(requestOptions.body);
     await fetch(api + "payment/pay", requestOptions)
       .then((response) => {
-        console.log(response.ok);
-        console.log(response.status);
         response.json().then((data) => {
           if (response.ok) {
-            console.log("Response Status :::  200");
             setPaymentSuccess(true);
             setSuccess(true);
             setShowLottie(true);
@@ -130,14 +124,12 @@ const Payment = () => {
             }, 2000);
           } else if (response.status == 400) {
             console.log("errors");
-            // console.log(data);
           }
         });
         setSuccess(false);
       })
       .catch((err) => {
         setMainLoading(false);
-        // console.log("dssfsdf", err);
       })
       .finally(() => {
         setMainLoading(false);
@@ -159,10 +151,6 @@ const Payment = () => {
   const handleAddItem = async () => {
     const number = cardnumber.slice(0, 19);
     const nameRegex = /^[a-zA-Z ]{2,30}$/;
-
-    console.log(number, number.length === 19, expiry, newItemName, cvv);
-    console.log("Adding Card Method");
-
     if (number.length < 19) {
       setNumberError(true);
     }
@@ -188,9 +176,8 @@ const Payment = () => {
       const [expiryMonth, expiryYear] = expiry.split("/");
       const currentYear = new Date().getFullYear().toString();
       const currentMonth = new Date().getMonth() + 1;
-      console.log(typeof expiryMonth);
+
       if (parseInt(expiryMonth, 10) > 12 || expiryMonth === "00") {
-        console.log("yeh condition check bhi ho rahi hai ???");
         setExpiryError(true);
       }
       if (parseInt(expiryYear, 10) < parseInt(currentYear, 10)) {
@@ -238,12 +225,11 @@ const Payment = () => {
         }),
       };
       try {
-        
         const response = await fetch(
           api + "payment/new_payment_method",
           requestOptions
         );
-      
+
         const data = await response.json();
         if (response.status === 200) {
           setShow(true);
@@ -255,7 +241,6 @@ const Payment = () => {
           setCvv("");
           setExpiry("");
         } else if (response.status === 402) {
-          
           setShow(true);
           setApiError(`Invalid Card Details - ${data.error.code}`);
           if (data.error.code == "invalid_expiry_year") setExpiryError(true);
@@ -268,7 +253,6 @@ const Payment = () => {
         setIsLoading(false);
       }
       getArticles();
-     
     }
   };
 
@@ -304,7 +288,7 @@ const Payment = () => {
 
   return (
     <>
-{loader && (
+      {loader && (
         <View>
           <Modal animationType="slide" transparent={true} visible={loader}>
             <View style={styles.centeredView}>
@@ -611,5 +595,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
- 
 });
