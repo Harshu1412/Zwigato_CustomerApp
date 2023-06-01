@@ -14,11 +14,12 @@ import { BackHandler } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Titlebar from "../components/TitileBar";
 import Mapbox from "@rnmapbox/maps";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import CheckInternet from "../components/CheckInternet";
+import messaging from "@react-native-firebase/messaging";
 
 Mapbox.setWellKnownTileServer("Mapbox");
 
@@ -52,6 +53,23 @@ const TrackOrderScreen = ({ route }) => {
 
   const bottomSheetRef = useRef();
 
+//Hnadling Notification for cancelled orders !!!
+useEffect(()=>{
+  const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+    title = JSON.stringify(remoteMessage);
+    const jsonObj = JSON.parse(title);
+    console.log("-----------------", jsonObj);
+    if(remoteMessage.notification.title==="Order Cancel")
+    {
+      
+      navigation.navigate("Main");
+    }
+  });
+  return unsubscribe;
+},[])
+
+
+
   // variables
   const snapPoints = useMemo(() => ["15%", "40%", "50%"], []);
 
@@ -67,12 +85,25 @@ const TrackOrderScreen = ({ route }) => {
   const fetchLatestLocation = async () => {
     const locationDocRef = doc(db, "LocationData", `${driver_orderId}`);
     const locationDocSnapshot = await getDoc(locationDocRef);
+    
     if (locationDocSnapshot.exists()) {
       const locationData = locationDocSnapshot.data();
       setDriverLat(locationData.latitude);
       setDriverLong(locationData.longitude);
-      // return { driverLat, driverLong };
     }
+    
+    // Set up real-time listener
+    onSnapshot(locationDocRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const locationData = snapshot.data();
+        setDriverLat(locationData.latitude);
+        setDriverLong(locationData.longitude);
+      } else {
+        // Handle case when document is deleted
+        setDriverLat(null);
+        setDriverLong(null);
+      }
+    });
   };
 
   useEffect(() => {
@@ -135,7 +166,7 @@ const TrackOrderScreen = ({ route }) => {
       <View style={styles.container}>
         <Mapbox.MapView style={styles.map}  >
           <Mapbox.Camera
-            zoomLevel={10}
+            zoomLevel={12}
             centerCoordinate={[
               driverLong || pickup_longitude,
               driverLat || pickup_latitude,
