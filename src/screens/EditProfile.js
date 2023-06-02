@@ -184,6 +184,7 @@ const EditProfile = ({ route }) => {
     return emailRegex.test(email);
   };
   const handleSavePress = () => {
+    //setMainLoading(true);
     setError2(null);
     const nameRegex = /^[a-zA-Z\s]{2,33}$/;
     const addressRegex = /^[a-zA-Z0-9\s\-\#\,\.]+$/;
@@ -316,24 +317,31 @@ const EditProfile = ({ route }) => {
           // console.log("update hu dost", data);
           setShow(true);
           setMessage("Profile Updated Successfully.");
+          
           setTimeout(() => {
+            setMainLoading(false);
             setShow(false);
           }, 1000);
         });
       });
       setLoading(false);
     } catch (error) {
+      if(error.message === "Network request failed"){
+        setEditable(true);
+        setButtonText("Save");
+        setShow(true);
+        setMessage("Unable to save data. Please save again")
+        setMainLoading(false);
+      }
       // console.log(error);
       setLoading(false);
-    } finally {
-      setMainLoading(false);
-    }
+    } 
   };
   return (
     <>
       {mainLoading && (<View >
         <Modal
-          animationType="slide"
+          animationType="none"
           transparent
           visible={mainLoading}>
           <View style={styles.centeredView1}>
@@ -412,7 +420,7 @@ const EditProfile = ({ route }) => {
                     } else if (buttonText === "Save") {
                       setSaveError("Save Details First!!");
                       return true;
-                    } else {
+                    } else if(!mainLoading){
                       navigation.goBack();
                       return true;
                     }
@@ -588,7 +596,7 @@ const EditProfile = ({ route }) => {
                 </View>
               </FterView>
             </ScrollView>
-            <Snackbar visible={show} onDismiss={() => setShow(false)}>
+            <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
               {message}
             </Snackbar>
             <StatusBar style="dark" />

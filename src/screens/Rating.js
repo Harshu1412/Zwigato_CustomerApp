@@ -6,7 +6,7 @@ import {
   BackHandler,
   StyleSheet,
   ActivityIndicator,
-  RefreshControl,
+  RefreshControl,Modal
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import moment from "moment";
@@ -145,16 +145,23 @@ const Ratings = ({ navigation }) => {
     );
   };
 
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
-
+ 
   return (
     <>
+     {isLoading && (
+        <View>
+          <Modal animationType="slide" transparent={true} visible={isLoading}>
+            <View style={styles.centeredVieW}>
+              <View style={styles.modalVieW}>
+                <ActivityIndicator size={40} />
+              </View>
+            </View>
+          </Modal>
+        </View>
+      )}
+
+
+
       <View style={{ marginHorizontal: "5%", marginTop: 10 }}>
         <Titlebar title={"Rating and Reviews"} />
       </View>
@@ -192,5 +199,20 @@ const styles = StyleSheet.create({
   ratingText: {
     fontFamily: "Montserrat_600SemiBold",
     fontSize: 20,
+  },
+  centeredVieW: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalVieW: {
+    margin: 20,
+
+    borderRadius: 20,
+    width: "70%",
+    height: "20%",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

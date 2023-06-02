@@ -238,7 +238,7 @@ const Feedback = ({ route }) => {
         <Snackbar
           visible={snackbarVisible}
           onDismiss={() => setSnackbarVisible(false)}
-          duration={3000}
+          duration={1000}
         >
           {rating === 0 || comment === ""
             ? "Please enter a comment and rating"

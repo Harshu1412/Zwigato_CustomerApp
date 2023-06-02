@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   Pressable,
   BackHandler,
-  Alert,
+  Alert,StyleSheet,Modal,ActivityIndicator
 } from "react-native";
 import React, {
   useCallback,
@@ -90,6 +90,7 @@ const MainScreen = () => {
   const navigation = useNavigation();
   const [authToken, setAuthToken] = useState("");
   const [fcmToken, SetfcmToken] = useState("");
+  const [loader,setLoader]=useState(true);
 
   const handleFcm = (token) => {
     SetfcmToken(token);
@@ -103,12 +104,19 @@ const MainScreen = () => {
     const nameGet = await AsyncStorage.getItem("name");
     setName(nameGet);
     setPhoto(photoUri);
+    fetchData();
   };
   useFocusEffect(
     useCallback(() => {
       getProfilePicture();
     }, [])
   );
+
+     useEffect(()=>{
+      fetchData();
+
+     },[])
+
 
   useEffect(() => {
     const backAction = () => {
@@ -142,15 +150,16 @@ const MainScreen = () => {
 
     try {
       const response = await fetch(api + "get", requestOptions);
-      // console.log(response.ok);
+     
       const json = await response.json();
-      // console.log(json);
+      console.log(json);
       if (json.data.name) {
         const firstName=(json.data.name).split(" ")[0]
         setName(firstName);
         setPhoto(api + json.data.photo_uri);
+        setLoader(false)
         // console.log(api+json.data.photo_uri);
-        AsyncStorage.setItem("name", json.data.name);
+     
         AsyncStorage.setItem("-photo", api + json.data.photo_uri);
       } else {
         AsyncStorage.removeItem("name");
@@ -192,6 +201,20 @@ const MainScreen = () => {
 
   return (
     <>
+    {loader && (
+        <View>
+          <Modal animationType="slide" transparent={true} visible={loader}>
+            <View style={styles.centeredVieW}>
+              <View style={styles.modalVieW}>
+                <ActivityIndicator size={40} />
+              </View>
+            </View>
+          </Modal>
+        </View>
+      )}
+
+
+
       <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
         <FcmToken inputSelect={handleFcm} />
 
@@ -300,3 +323,23 @@ const MainScreen = () => {
 };
 
 export default MainScreen;
+
+const styles = StyleSheet.create({
+  
+  centeredVieW: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalVieW: {
+    margin: 20,
+
+    borderRadius: 20,
+    width: "70%",
+    height: "20%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+});

@@ -31,7 +31,7 @@ Mapbox.setAccessToken(
 
 const PlaceOrderDetailScreen = ({ route }) => {
   const {
-    instruction,
+    inst,
     pickUp,
     deliverTo,
     checkedItems,
@@ -408,7 +408,7 @@ const PlaceOrderDetailScreen = ({ route }) => {
                     fontFamily: "Montserrat_400Regular",
                   }}
                 >
-                  {instruction}
+                  {inst}
                 </Text>
               </View>
             </View>

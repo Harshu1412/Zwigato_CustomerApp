@@ -5,7 +5,7 @@ import {
   Keyboard,
   FlatList,
   TouchableOpacity,
-  KeyboardAvoidingView,
+  
   BackHandler, Modal, Pressable, Alert, ScrollView,Dimensions,ActivityIndicator
 
 } from "react-native";
@@ -69,20 +69,11 @@ const TaskScreen1 = ({ navigation }) => {
     setAuthToken(token);
   });
   const handleTextChange = (text) => {
-    setInstructionError(false)
-    // Remove trailing spaces when the user hits enter
-    // if (text.endsWith('\n')) {
-    //   text = text.trimEnd();
-    // }
-
-    // Limit the instruction to a maximum of 50 words
-    const words = text.trim().split(/\s+/);
-    if (words.length > MAX_WORDS) {
-      text = words.slice(0, MAX_WORDS).join(' ');
-    }
-
+    setInstructionError(false);
     setInstruction(text);
+
   };
+  
 
 
   useEffect(() => {
@@ -128,6 +119,8 @@ const TaskScreen1 = ({ navigation }) => {
 
   const handleSubmit = async () => {
     // validate form inputs
+    let inst = instruction.trim();
+    console.log("-----",inst)
     if (pickUp.length === 0) {
       setPickupError(true);
     }
@@ -171,7 +164,7 @@ const TaskScreen1 = ({ navigation }) => {
         body: JSON.stringify({
           pickup_from: pickUp,
           deliver_to: deliverTo,
-          instruction,
+          instruction:inst,
           category_item_type: checkedItems,
           pickup_latitude: pickupLat,
           pickup_longitude: pickupLong,
@@ -187,7 +180,7 @@ const TaskScreen1 = ({ navigation }) => {
         // console.log(data.order.id);
         setTokenId(data.order.id);
         navigation.navigate("PlaceOrderDetial", {
-          instruction,
+          inst,
           pickUp,
           deliverTo,
           checkedItems,
@@ -490,7 +483,7 @@ const TaskScreen1 = ({ navigation }) => {
           </View>
         )}
         {!modalVisible && (
-          <View style={{ marginTop: "4%", width: "90%" }}>
+          <View style={{ marginTop: "4%", width: "90%",height:150 }}>
             <TextInput
               label="Instructions"
               mode="outlined"
@@ -498,7 +491,10 @@ const TaskScreen1 = ({ navigation }) => {
               onChangeText={handleTextChange}
               // onFocus={handleFocus}
               // onBlur={handleBlur}
-              multiline={true}
+             
+             multiline
+             numberOfLines={6}
+              maxLength={500}
               theme={{
                 ...DefaultTheme,
                 roundness: 10,
@@ -514,6 +510,11 @@ const TaskScreen1 = ({ navigation }) => {
             />
           </View>
         )}
+        {instruction.length >500 && (
+  <Text style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}>
+    Instructions should not exceed 500 characters.
+  </Text>
+)}
 
         {instructionError ? (
           <Text style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}>

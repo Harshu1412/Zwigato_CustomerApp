@@ -299,13 +299,28 @@ const Payment = () => {
           </Modal>
         </View>
       )}
-
-      {mainLoading && (
-        <ActivityIndicator color={"black"} size={40} style={{ flex: 20 }} />
+       {mainLoading && (
+        <View>
+          <Modal animationType="slide" transparent={true} visible={mainLoading}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <ActivityIndicator size={40} />
+              </View>
+            </View>
+          </Modal>
+        </View>
       )}
 
+     
+
       {showLottie ? (
-        <PaymentLottie />
+        <Modal animationType="slide" transparent={true} visible={showLottie}>
+        <View style={styles.centeredView}>
+          <PaymentLottie />
+        </View>
+      </Modal>
+        
+       
       ) : (
         <View style={{ flex: 1 }}>
           <View style={{ marginHorizontal: "5%" }}>

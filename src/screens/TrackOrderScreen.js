@@ -61,7 +61,7 @@ useEffect(()=>{
     console.log("-----------------", jsonObj);
     if(remoteMessage.notification.title==="Order Cancel")
     {
-      
+       
       navigation.navigate("Main");
     }
   });

@@ -20,7 +20,7 @@ const CheckInternet = () => {
   }, []);
   
   const renderSnackbar = () => (
-    <Snackbar visible={!isConnected} onDismiss={() => setShow(false)}>
+    <Snackbar visible={!isConnected} duration={1000} onDismiss={() => setShow(false)}>
       No internet connection. Please turn on your internet.
     </Snackbar>
   );

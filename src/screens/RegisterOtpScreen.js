@@ -353,7 +353,7 @@ export const RegisterOtpScreen = ({ route }) => {
         </ContinueView>
       </OtpView>
       <CheckInternet />
-      <Snackbar visible={show} onDismiss={() => setShow(false)}>
+      <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
         {apiError}
       </Snackbar>
       <StatusBar style="light" />
