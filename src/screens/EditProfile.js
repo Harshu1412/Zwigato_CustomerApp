@@ -32,6 +32,7 @@ import { api } from "../../Api";
 import { Snackbar } from "react-native-paper";
 import CheckInternet from "../components/CheckInternet";
 import { codeFinder } from "../components/CountryCode";
+import { ErrorText } from './../styles/styles';
 const MView = styled.View`
 flex:1;
 background-color:white
@@ -92,13 +93,14 @@ const EditProfile = ({ route }) => {
   const [show, setShow] = useState(false);
   const [message, setMessage] = useState("");
   const [saveError, setSaveError] = useState("");
+  const [photoError, setPhotoError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mainLoading, setMainLoading] = useState(false);
   const [userData, setUserData] = useState(null);
   AsyncStorage.getItem("token").then((token) => {
     setAuthToken(token);
   });
- 
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,7 +112,6 @@ const EditProfile = ({ route }) => {
       ) {
         try {
           setMainLoading(true);
-          console.log("Api Calls ")
 
           const requestOptions = {
             method: "GET",
@@ -120,12 +121,11 @@ const EditProfile = ({ route }) => {
             },
           };
           const response = await fetch(api + "get", requestOptions);
-          console.log("hey")
           console.log(response.status);
-      
-          const json = await response.json();
 
-          
+          const json = await response.json();
+          // console.log(json);
+
           if (json && json.data.phone) {
             setUserData(json.data);
             setPhone(json.data.phone);
@@ -153,8 +153,9 @@ const EditProfile = ({ route }) => {
     fetchData();
   }, [authToken, handleSavePress]);
 
+
   useEffect(() => {
-    const backAction = () => {
+    const backAction = async () => {
       if (name === "" || name === null) {
         setError("Enter Name");
         return true; // Prevent the back action
@@ -165,8 +166,51 @@ const EditProfile = ({ route }) => {
         setError3("Enter address");
         return true; // Prevent the back action
       } else if (buttonText === "Save") {
-        setSaveError("Save Details First!!");
-        return true;
+        // try {
+        //   const nameValue = await AsyncStorage.getItem("name");
+        //   const photoValue = await AsyncStorage.getItem("-photo");
+        //   if (nameValue !== null) {
+        //     console.log(nameValue); // This will log the stored value of "name"
+        //     console.log(nameValue.length); // This will log the length of the stored value
+        //     if(photoValue !== null){
+        //       navigation.goBack();
+        //       return true;
+        //     } else {
+        //       setPhotoError("Please upload photo")
+        //       return true;
+        //     }
+        //   } else {
+        //     setSaveError("Save Details First!!");
+        //     return true;
+        //   }
+        // } catch (error) {
+        //   console.log("Error retrieving data from AsyncStorage:", error);
+        // }
+        try {
+          const nameValue = await AsyncStorage.getItem("name");
+          const photoValue = await AsyncStorage.getItem("-photo");
+          
+          if (nameValue === null || photoValue === null) {
+            
+            if (photoValue === null) {
+              setPhotoError("Please upload photo");
+              return true;
+            } else if (nameValue === null) {
+              setSaveError("Save Details First!!");
+              return true;
+            }
+            // return true; // Prevent the back action
+          }
+          
+          console.log(nameValue); // This will log the stored value of "name"
+          console.log(nameValue.length); // This will log the length of the stored value
+          
+          navigation.goBack();
+          return true;
+        } catch (error) {
+          console.log("Error retrieving data from AsyncStorage:", error);
+        }
+
       } else {
         navigation.goBack();
         return true;
@@ -178,13 +222,13 @@ const EditProfile = ({ route }) => {
     );
 
     return () => backHandler.remove();
-  }, [name, address, email, buttonText]);
+  }, [name, address, email, buttonText,photo]);
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
-  const handleSavePress = () => {
-    //setMainLoading(true);
+  const handleSavePress = async () => {
+    setMainLoading(true);
     setError2(null);
     const nameRegex = /^[a-zA-Z\s]{2,33}$/;
     const addressRegex = /^[a-zA-Z0-9\s\-\#\,\.]+$/;
@@ -193,10 +237,14 @@ const EditProfile = ({ route }) => {
     // Check if inputs are valid
     if (!nameRegex.test(name) || !name) {
       setError("Invalid Name", "Please enter a valid name.");
+    setMainLoading(false);
+
       return;
     }
     if (!emailRegex.test(email) || !email) {
       setError1("Invalid Email", "Please enter a valid email address.");
+    setMainLoading(false);
+
       return;
     }
     // if (!phoneRegex.test(phone)) {
@@ -208,7 +256,38 @@ const EditProfile = ({ route }) => {
         "Invalid Address",
         "Please enter a valid 10-digit phone number."
       );
+    setMainLoading(false);
+
       return;
+    }
+    try {
+      const nameValue = await AsyncStorage.getItem("name");
+      const photoValue = await AsyncStorage.getItem("-photo");
+      
+      if (nameValue === null || photoValue === null) {
+        if (photoValue === null) {
+    setMainLoading(false);
+
+          setPhotoError("Please upload photo");
+          return true;
+        } else if (nameValue === null) {
+    setMainLoading(false);
+
+          setSaveError("Save Details First!!");
+          return true;
+        }
+        // return true; // Prevent the back action
+      }
+      
+      // console.log(nameValue); // This will log the stored value of "name"
+      // console.log(nameValue.length); // This will log the length of the stored value
+      
+      // navigation.goBack();
+      // return true;
+    } catch (error) {
+    setMainLoading(false);
+
+      console.log("Error retrieving data from AsyncStorage:", error);
     }
     setMainLoading(true);
     setLoading(true);
@@ -237,6 +316,7 @@ const EditProfile = ({ route }) => {
         const photoUri = result.assets[0].uri;
         // console.log(photoUri);
         setPhoto(photoUri);
+        setPhotoError(false);
         await AsyncStorage.setItem("-photo", photoUri);
       }
     } else {
@@ -256,6 +336,9 @@ const EditProfile = ({ route }) => {
       getProfilePicture();
     }, [])
   );
+
+
+
   const pickImage = useCallback(async () => {
     setModalVisible(false);
     try {
@@ -268,6 +351,7 @@ const EditProfile = ({ route }) => {
       if (!result.canceled) {
         const photoUri = result.assets[0].uri;
         setPhoto(photoUri);
+        setPhotoError(false)
         await AsyncStorage.setItem("-photo", photoUri);
       }
     } catch (error) {
@@ -317,7 +401,7 @@ const EditProfile = ({ route }) => {
           // console.log("update hu dost", data);
           setShow(true);
           setMessage("Profile Updated Successfully.");
-          
+
           setTimeout(() => {
             setMainLoading(false);
             setShow(false);
@@ -326,7 +410,7 @@ const EditProfile = ({ route }) => {
       });
       setLoading(false);
     } catch (error) {
-      if(error.message === "Network request failed"){
+      if (error.message === "Network request failed") {
         setEditable(true);
         setButtonText("Save");
         setShow(true);
@@ -335,7 +419,7 @@ const EditProfile = ({ route }) => {
       }
       // console.log(error);
       setLoading(false);
-    } 
+    }
   };
   return (
     <>
@@ -346,264 +430,290 @@ const EditProfile = ({ route }) => {
           visible={mainLoading}>
           <View style={styles.centeredView1}>
             <View style={styles.modalView1}>
-              <ActivityIndicator size={40}/>
+              <ActivityIndicator size={40} />
             </View>
           </View>
         </Modal>
-       </View> 
-       ) 
+      </View>
+      )
       }
-        <SafeAreaView style={{ flex: 1, backgroundColor: "white", padding: 8 }}>
-          <MView>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                setModalVisible(!modalVisible);
-              }}
-            >
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <Text style={styles.modalText}>Choose an Option</Text>
-                  <View style={{ flexDirection: "row" }}>
-                    <Pressable
-                      style={[styles.button, styles.buttonClose]}
-                      onPress={pickImage}
-                    >
-                      <Text style={styles.textStyle}>Gallery</Text>
-                    </Pressable>
-                    <Pressable
-                      style={[styles.button, styles.buttonClose]}
-                      onPress={handleTakePhoto}
-                    >
-                      <Text style={styles.textStyle}>Camera</Text>
-                    </Pressable>
-                  </View>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "white", padding: 8 }}>
+        <MView>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>Choose an Option</Text>
+                <View style={{ flexDirection: "row" }}>
+                  <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={pickImage}
+                  >
+                    <Text style={styles.textStyle}>Gallery</Text>
+                  </Pressable>
+                  <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={handleTakePhoto}
+                  >
+                    <Text style={styles.textStyle}>Camera</Text>
+                  </Pressable>
                 </View>
               </View>
-            </Modal>
-            <View
-              style={{
-                height: 53,
-                marginTop: 10,
-                backgroundColor: "white",
-                borderRadius: 8,
-                width: "94%",
-                flexDirection: "row",
-                alignItems: "center",
-                alignSelf: "center",
-                justifyContent: "center",
-                marginBottom: 20,
-                shadowColor: "#000",
-                shadowOffset: {
-                  width: 0,
-                  height: 2,
-                },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-                elevation: 5,
-              }}
-            >
-              <View style={{ position: "absolute", left: 15 }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    if (name === "" || name === null) {
-                      setError("Enter Name");
-                      return true; 
-                    } else if (!isValidEmail(email)) {
-                      setError1("Enter email");
-                      return true; 
-                    } else if (address === "" || address === null) {
-                      setError3("Enter address");
-                      return true; 
-                    } else if (buttonText === "Save") {
-                      setSaveError("Save Details First!!");
-                      return true;
-                    } else if(!mainLoading){
+            </View>
+          </Modal>
+          <View
+            style={{
+              height: 53,
+              marginTop: 10,
+              backgroundColor: "white",
+              borderRadius: 8,
+              width: "94%",
+              flexDirection: "row",
+              alignItems: "center",
+              alignSelf: "center",
+              justifyContent: "center",
+              marginBottom: 20,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+            }}
+          >
+            <View style={{ position: "absolute", left: 15 }}>
+              <TouchableOpacity
+                onPress={ async () => {
+                  if (name === "" || name === null) {
+                    setError("Enter Name");
+                    return true;
+                  } else if (!isValidEmail(email)) {
+                    setError1("Enter email");
+                    return true;
+                  } else if (address === "" || address === null) {
+                    setError3("Enter address");
+                    return true;
+                  } else if (buttonText === "Save") {
+                    try {
+                      const nameValue = await AsyncStorage.getItem("name");
+                      const photoValue = await AsyncStorage.getItem("-photo");
+                      
+                      if (nameValue === null || photoValue === null) {
+                        if (photoValue === null) {
+                          setPhotoError("Please upload photo");
+                          return true;
+                        } else if (nameValue === null) {
+                          setSaveError("Save Details First!!");
+                          return true;
+                        }
+                        // return true; // Prevent the back action
+                      }
+                      
+                      console.log(nameValue); // This will log the stored value of "name"
+                      console.log(nameValue.length); // This will log the length of the stored value
+                      
                       navigation.goBack();
                       return true;
+                    } catch (error) {
+                      console.log("Error retrieving data from AsyncStorage:", error);
                     }
-                  }}
-                >
-                  <AntDesign name="left" size={24} color="black" />
-                </TouchableOpacity>
-              </View>
-              <Text style={{ fontSize: 16 }}>
-                {" "}
-                {editable ? "Edit Profile" : "Profile"}{" "}
-              </Text>
+                  } else if (!mainLoading) {
+                    navigation.goBack();
+                    return true;
+                  }
+                }}
+              >
+                <AntDesign name="left" size={24} color="black" />
+              </TouchableOpacity>
             </View>
+            <Text style={{ fontSize: 16 }}>
+              {" "}
+              {editable ? "Edit Profile" : "Profile"}{" "}
+            </Text>
+          </View>
 
-            <AvatarView>
-              {!photo && (
-                <Avatar
-                  rounded
-                  size="xlarge"
-                  source={{
-                    uri: "https://images.unsplash.com/photo-1580518337843-f959e992563b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
-                  }}
-                  activeOpacity={0.7}
-                />
-              )}
-              {photo && (
-                <Avatar
-                  rounded
-                  size={180}
-                  source={{ uri: photo }}
-                  backgroundColor="#2182BD"
-                />
-              )}
+          <AvatarView>
+            {!photo && (
+              <Avatar
+                rounded
+                size="xlarge"
+                source={{
+                  uri: "https://images.unsplash.com/photo-1580518337843-f959e992563b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
+                }}
+                activeOpacity={0.7}
+              />
+            )}
+            {photo && (
+              <Avatar
+                rounded
+                size={180}
+                source={{ uri: photo }}
+                backgroundColor="#2182BD"
+              />
+            )}
 
-              {editable ? (
-                <TouchableOpacity
+            {editable ? (
+              <TouchableOpacity
+                style={{
+                  position: "absolute",
+                  right: 100,
+                  bottom: 10,
+                  backgroundColor: "#0C8A7B",
+                  borderRadius: 27,
+                  padding: 10,
+                }}
+                onPress={() => setModalVisible(true)}
+              >
+                <Entypo
+                  name="camera"
+                  size={30}
+                  color="white"
+                  style={[styles.button, styles.buttonOpen]}
+                />
+              </TouchableOpacity>
+            ) : null}
+          </AvatarView>
+
+          
+          {photoError && (
+                  <ErrorText>{photoError}</ErrorText>
+                )}
+          <AvatarText>{name}</AvatarText>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <FterView flex={1}>
+              <TextInputs
+                label="Name"
+                maxLength={33}
+                value={name}
+                onChangeText={(text) => {
+                  setName(text);
+                  setError(null);
+                }}
+                disabled={!editable}
+                mode="outlined"
+              />
+              {error && (
+                <Text style={{ color: "red", alignSelf: "center" }}>
+                  {error}
+                </Text>
+              )}
+              <TextInputs
+                label="Email"
+                value={email}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  setError1(null);
+                }}
+                disabled={!editable}
+                mode="outlined"
+              />
+              {error1 && (
+                <Text style={{ color: "red", alignSelf: "center" }}>
+                  {error1}
+                </Text>
+              )}
+              <BorderView>
+                <Text
                   style={{
                     position: "absolute",
-                    right: 100,
-                    bottom: 10,
-                    backgroundColor: "#0C8A7B",
-                    borderRadius: 27,
-                    padding: 10,
+                    paddingHorizontal: 6,
+                    top: -10,
+                    left: 7,
+                    backgroundColor: "white",
+                    fontSize: 12,
+                    fontFamily: "Montserrat_500Medium",
+                    color: "lightgrey",
                   }}
-                  onPress={() => setModalVisible(true)}
                 >
-                  <Entypo
-                    name="camera"
-                    size={30}
-                    color="white"
-                    style={[styles.button, styles.buttonOpen]}
-                  />
-                </TouchableOpacity>
-              ) : null}
-            </AvatarView>
-            <AvatarText>{name}</AvatarText>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-              <FterView flex={1}>
-                <TextInputs
-                  label="Name"
-                  maxLength={33}
-                  value={name}
-                  onChangeText={(text) => {
-                    setName(text);
-                    setError(null);
-                  }}
-                  disabled={!editable}
-                  mode="outlined"
-                />
-                {error && (
-                  <Text style={{ color: "red", alignSelf: "center" }}>
-                    {error}
-                  </Text>
-                )}
-                <TextInputs
-                  label="Email"
-                  value={email}
-                  onChangeText={(text) => {
-                    setEmail(text);
-                    setError1(null);
-                  }}
-                  disabled={!editable}
-                  mode="outlined"
-                />
-                {error1 && (
-                  <Text style={{ color: "red", alignSelf: "center" }}>
-                    {error1}
-                  </Text>
-                )}
-                <BorderView>
-                  <Text
-                    style={{
-                      position: "absolute",
-                      paddingHorizontal: 6,
-                      top: -10,
-                      left: 7,
-                      backgroundColor: "white",
-                      fontSize: 12,
-                      fontFamily: "Montserrat_500Medium",
-                      color: "lightgrey",
-                    }}
-                  >
-                    Phone
-                  </Text>
-                  <PhoneInputView>
-                    <View style={{ pointerEvents: "none" }}>
-                      <CountryPicker
-                        withFilter
-                        countryCode={countryCode}
-                        withFlag
-                        // withCountryNameButton
-                        withAlphaFilter={false}
-                        withCallingCode
-                        withCurrencyButton={false}
-                        onSelect={(country) => {
-                          // console.log(country)
-                          const { cca2, callingCode } = country;
-                          setCountryCode(cca2);
-                          setCallingCode(callingCode[0]);
-                        }}
-                        containerButtonStyle={{
-                          alignItems: "center",
-                          marginRight: -10,
-                        }}
-                      />
-                    </View>
-                    <Text style={{ fontSize: 14, color: "lightgrey" }}>
-                      {" "}
-                      |{" "}
-                    </Text>
-                    <TextInput
-                      value={phone}
-                      flex={1}
-                      onChangeText={(text) => {
-                        setPhone(text), setError2(null);
+                  Phone
+                </Text>
+                <PhoneInputView>
+                  <View style={{ pointerEvents: "none" }}>
+                    <CountryPicker
+                      withFilter
+                      countryCode={countryCode}
+                      withFlag
+                      // withCountryNameButton
+                      withAlphaFilter={false}
+                      withCallingCode
+                      withCurrencyButton={false}
+                      onSelect={(country) => {
+                        // console.log(country)
+                        const { cca2, callingCode } = country;
+                        setCountryCode(cca2);
+                        setCallingCode(callingCode[0]);
                       }}
-                      mode="outlined"
-                      keyboardType={"phone-pad"}
-                      maxLength={15}
-                      editable={false}
+                      containerButtonStyle={{
+                        alignItems: "center",
+                        marginRight: -10,
+                      }}
                     />
-                    {error2 && <Text style={{ color: "red" }}>{error2}</Text>}
-                  </PhoneInputView>
-                </BorderView>
-                <TextInputs
-                  label="Address"
-                  value={address}
-                  onChangeText={(text) => {
-                    setAddress(text), setError3(null);
-                  }}
-                  disabled={!editable}
-                  mode="outlined"
-                />
-                {error3 && (
+                  </View>
+                  <Text style={{ fontSize: 14, color: "lightgrey" }}>
+                    {" "}
+                    |{" "}
+                  </Text>
+                  <TextInput
+                    value={phone}
+                    flex={1}
+                    onChangeText={(text) => {
+                      setPhone(text), setError2(null);
+                    }}
+                    mode="outlined"
+                    keyboardType={"phone-pad"}
+                    maxLength={15}
+                    editable={false}
+                  />
+                  {error2 && <Text style={{ color: "red" }}>{error2}</Text>}
+                </PhoneInputView>
+              </BorderView>
+              <TextInputs
+                label="Address"
+                value={address}
+                onChangeText={(text) => {
+                  setAddress(text), setError3(null);
+                }}
+                disabled={!editable}
+                mode="outlined"
+              />
+              {error3 && (
+                <Text style={{ color: "red", alignSelf: "center" }}>
+                  {error3}
+                </Text>
+              )}
+
+              <View style={{ marginTop: "auto" }}>
+                {saveError && (
                   <Text style={{ color: "red", alignSelf: "center" }}>
-                    {error3}
+                    {saveError}
                   </Text>
                 )}
 
-                <View style={{ marginTop: "auto" }}>
-                  {saveError && (
-                    <Text style={{ color: "red", alignSelf: "center" }}>
-                      {saveError}
-                    </Text>
-                  )}
-
-                    <View marginTop="auto">
-                      <BlackButton
-                        title={buttonText}
-                        onPress={editable ? handleSavePress : handleEditPress}
-                      />
-                    </View>
+                <View marginTop="auto">
+                  <BlackButton
+                    title={buttonText}
+                    onPress={editable ? handleSavePress : handleEditPress}
+                  />
                 </View>
-              </FterView>
-            </ScrollView>
-            <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
-              {message}
-            </Snackbar>
-            <StatusBar style="dark" />
-          </MView>
-          <CheckInternet />
-        </SafeAreaView>
-      
+              </View>
+            </FterView>
+          </ScrollView>
+          <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
+            {message}
+          </Snackbar>
+          <StatusBar style="dark" />
+        </MView>
+        <CheckInternet />
+      </SafeAreaView>
+
     </>
   );
 };
@@ -674,18 +784,18 @@ const styles = StyleSheet.create({
   },
   centeredView1: {
     flex: 1,
-     justifyContent: 'center',
-     alignItems: 'center',
-     marginTop: 22,
-   },
-   modalView1: {
-     margin: 20,
-     borderRadius: 20,
-    width:"70%",
-    height:"20%",
     justifyContent: 'center',
     alignItems: 'center',
-     
-    
-   },
+    marginTop: 22,
+  },
+  modalView1: {
+    margin: 20,
+    borderRadius: 20,
+    width: "70%",
+    height: "20%",
+    justifyContent: 'center',
+    alignItems: 'center',
+
+
+  },
 });

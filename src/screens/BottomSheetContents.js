@@ -9,7 +9,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback } from "react";
 import { api } from '../../Api';
 
-const BottomSheetContents = ({ driverOrderId,driverPhoto, carNumber, pickupLocation, dropLocation,driverName, phone, distance}) => {
+const BottomSheetContents = ({ driverOrderId,driverPhoto, carNumber, pickupLocation, dropLocation,driverName, phone, distance,order_pin}) => {
   const bottomSheetRef = useRef(null);
   const [photo, setPhoto] = useState(null);
   const [authToken, setAuthToken] = useState('');
@@ -74,6 +74,7 @@ const BottomSheetContents = ({ driverOrderId,driverPhoto, carNumber, pickupLocat
         }
         <View marginLeft={10} justifyContent="center">
           <Text  style={{fontSize:20}}>{driverName} </Text>
+          <Text style={{fontSize:11}}>PIN: {order_pin}</Text>
           <Text style={{fontSize:11}}># {driverOrderId}</Text>
         </View>
           </View>

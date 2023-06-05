@@ -417,9 +417,9 @@ const Payment = () => {
               style={CustomStyles.makePaymentButton}
               disabled={isMakingPayment}
             >
-              {isMakingPayment ? ( // Show loading indicator if making payment
+              {/* {isMakingPayment ? ( // Show loading indicator if making payment
                 <ActivityIndicator color="white" size="large" />
-              ) : (
+              ) : ( */}
                 <Text
                   style={{
                     fontFamily: "Montserrat_600SemiBold",
@@ -429,7 +429,7 @@ const Payment = () => {
                 >
                   Make Payment
                 </Text>
-              )}
+              {/* )} */}
             </TouchableOpacity>
           ) : (
             <View

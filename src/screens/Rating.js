@@ -34,11 +34,17 @@ const Ratings = ({ navigation }) => {
     setAuthToken(token);
   });
   const getArticles = async () => {
+    let token = "";
+    try {
+      token = await AsyncStorage.getItem("token");
+    } catch (error) {
+      // console.log("cannot get token", error);
+    }
     const requestOptions = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
+        Authorization: `Bearer ${token}`,
       },
     };
     try {
@@ -179,7 +185,11 @@ const Ratings = ({ navigation }) => {
           />
         ) : (
           <View style={styles.rating}>
+            {isLoading ? 
+            "":
+
             <Text style={styles.ratingText}>No ratings yet ⭐⭐</Text>
+          }
           </View>
         )}
       </View>

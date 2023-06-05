@@ -138,6 +138,7 @@ export const LoginScreen = () => {
       AsyncStorage.removeItem("token");
       AsyncStorage.removeItem("creationTime");
     }
+    setLoading(false)
   };
 
   const onSignIn = () => {
@@ -158,6 +159,7 @@ export const LoginScreen = () => {
         if (error.message === "Firebase: Error (auth/too-many-requests).") {
           setShow(true);
           setApiError("Too2-many-requests try after 15 minutes");
+          setLoading(false)
         } else {
           // Cancelled reCAPTCHA, clear token from AsyncStorage
           AsyncStorage.removeItem("token");

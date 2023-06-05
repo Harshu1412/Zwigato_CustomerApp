@@ -90,7 +90,7 @@ const MainScreen = () => {
   const navigation = useNavigation();
   const [authToken, setAuthToken] = useState("");
   const [fcmToken, SetfcmToken] = useState("");
-  const [loader,setLoader]=useState(true);
+  const [loader,setLoader]=useState(false);
 
   const handleFcm = (token) => {
     SetfcmToken(token);
@@ -152,7 +152,7 @@ const MainScreen = () => {
       const response = await fetch(api + "get", requestOptions);
      
       const json = await response.json();
-      console.log(json);
+      // console.log(json);
       if (json.data.name) {
         const firstName=(json.data.name).split(" ")[0]
         setName(firstName);
@@ -169,6 +169,8 @@ const MainScreen = () => {
       // console.log(json)
     } catch (error) {
       // console.log("Error: json or json.data is undefined or null.");
+    }finally{
+      setLoader(false)
     }
   }, [name]);
 

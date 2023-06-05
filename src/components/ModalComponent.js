@@ -51,16 +51,14 @@ export const Sidebar = ({ isOpen, onClose }) => {
   };
   const handleTab5Press = async (tab) => {
     setActiveTab(tab);
-
+  
     try {
-      AsyncStorage.clear()
+      AsyncStorage.clear();
       await signOut(auth);
-      navigation.replace("Home");
-      // AsyncStorage.removeItem('name')
-      // AsyncStorage.removeItem(`-photo`)
-      // AsyncStorage.removeItem('token')
-      // AsyncStorage.removeItem('creationTime')
-      // AsyncStorage.removeItem('Sucess')
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
       onClose();
     } catch (error) {
       console.error(error);

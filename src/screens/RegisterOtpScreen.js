@@ -98,6 +98,7 @@ export const RegisterOtpScreen = ({ route }) => {
         setShow(true);
         setApiError("Too many requests try after 15 minutes.");
       }
+      setIsLoading(false)
     }
   };
 

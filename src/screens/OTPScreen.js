@@ -79,6 +79,7 @@ export const OtpScreen = ({ route }) => {
         setShow(true);
         setApiError("Too many requests try after 15 minutes.");
       }
+      setIsLoading(false)
     }
   };
 

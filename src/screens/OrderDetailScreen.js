@@ -26,8 +26,10 @@ export const OrderDetailScreen = ({ route }) => {
     distance,
     completed_timing,
     addtional_charge,
-    instruction
+    instruction,
+    order_pin
   } = route.params;
+  console.log(order_pin);
   // console.log(completed_timing);
   const navigation = useNavigation();
   return (
@@ -60,6 +62,18 @@ export const OrderDetailScreen = ({ route }) => {
             <Text style={styles.statusText}>{status}</Text>
           )}
         </View>
+        <Text style={{ fontFamily: "Montserrat_400Regular" }}>
+          Order Pin:{" "}
+          <Text
+            style={{
+              fontWeight: 600,
+              lineHeight: 20,
+              fontFamily: "Montserrat_600SemiBold",
+            }}
+          >
+            {order_pin}
+          </Text>
+        </Text>
         <Text style={{ fontFamily: "Montserrat_400Regular" }}>
           Item Type:{" "}
           <Text
@@ -134,7 +148,7 @@ export const OrderDetailScreen = ({ route }) => {
           // marginTop: 15,
           backgroundColor: "white",
           borderRadius: 8,
-          marginHorizontal:11,
+          marginHorizontal:"5%",
           shadowColor: "#000",
           shadowOffset: {
             width: 0,
@@ -167,7 +181,7 @@ export const OrderDetailScreen = ({ route }) => {
           </Text>
         </View>
       </View>
-      <View paddingHorizontal={10}>
+      <View marginHorizontal="5%">
         <View style={styles.billing}>
           <Text style={{ fontFamily: "Montserrat_400Regular" }}>
             Billing Detials
@@ -244,6 +258,7 @@ export const OrderDetailScreen = ({ route }) => {
                 delivery_longitude,
                 driver_id,
                 distance,
+                order_pin
               });
             }}
           />

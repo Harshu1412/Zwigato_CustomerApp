@@ -216,7 +216,8 @@ export const OrderCard = (props) => {
                 distance,
                 completed_timing,
                 addtional_charge,
-                instruction
+                instruction,
+                order_pin
               });
             }}
           >

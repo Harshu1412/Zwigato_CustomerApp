@@ -41,6 +41,7 @@ const TrackOrderScreen = ({ route }) => {
     delivery_longitude,
     driver_id,
     distance,
+    order_pin
   } = route.params;
   const [driverPhoto, setDriverPhoto] = useState("");
   const [carNumber, setCarNumber] = useState("ABC-123")
@@ -243,6 +244,7 @@ useEffect(()=>{
           dropLocation={Deliver_To}
           phone={driverPhone}
           distance={distance}
+          order_pin={order_pin}
         />
       </BottomSheet>
       <CheckInternet />
