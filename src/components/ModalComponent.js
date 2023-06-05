@@ -51,8 +51,22 @@ export const Sidebar = ({ isOpen, onClose }) => {
   };
   const handleTab5Press = async (tab) => {
     setActiveTab(tab);
-  
+    let token = "";
     try {
+      token = await AsyncStorage.getItem('token');
+    } catch (error) {
+      console.log('Error retrieving token:', error);
+    }
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json", 'Authorization': `Bearer ${token}` },
+    };
+
+    try {
+      const response = await fetch(`${api}auth/logout`, requestOptions);
+      console.log("logout testing ", response.ok)
+      const json = await response.json();
+      console.log(json);
       AsyncStorage.clear();
       await signOut(auth);
       navigation.reset({
@@ -61,8 +75,10 @@ export const Sidebar = ({ isOpen, onClose }) => {
       });
       onClose();
     } catch (error) {
-      console.error(error);
+      console.log("afsljkasjkfj",error);
     }
+
+
   };
   // const handleTab5Press = (tab) => {
   //   setActiveTab(tab);

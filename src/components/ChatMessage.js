@@ -32,8 +32,7 @@ export const ChatMessage = (props) => {
       });
       setUser(user);
       setLoading(false);
-      //console.log(loading,"loading")
-      //  console.log(user[0].from)
+      
     });
 
     return () => unsubscribe();
@@ -47,7 +46,7 @@ export const ChatMessage = (props) => {
   useEffect(() => {
     setTimeout(() => {
       scroll();
-    }, 2000);
+    }, 1000);
   }, [loading, user]);
 
   function formatTimestamp(timestamp) {

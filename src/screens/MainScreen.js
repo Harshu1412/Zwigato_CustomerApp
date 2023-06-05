@@ -105,9 +105,13 @@ const MainScreen = () => {
   const getProfilePicture = async () => {
     const photoUri = await AsyncStorage.getItem(`-photo`);
     const nameGet = await AsyncStorage.getItem("name");
-    const firstName = (nameGet).split(" ")[0]
-        setName(firstName);
-    // setName(nameGet);
+    if (nameGet !== null) {
+      const firstName = (nameGet).split(" ")[0]
+      setName(firstName);
+    } else {
+      setName(null);
+
+    }
     setPhoto(photoUri);
     fetchData();
   };
@@ -335,7 +339,7 @@ const MainScreen = () => {
           <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
             {apiError}
           </Snackbar>
-          
+
           <CheckInternet />
 
           <StatusBar style="dark" />
