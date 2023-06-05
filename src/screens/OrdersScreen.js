@@ -18,6 +18,7 @@ import { api } from "../../Api";
 import CheckInternet from "../components/CheckInternet";
 import messaging from "@react-native-firebase/messaging";
 import { useCallback } from "react";
+import { Snackbar } from "react-native-paper";
 
 export const OrdersScreen = ({ navigation }) => {
   const [authToken, setAuthToken] = useState("");
@@ -26,6 +27,8 @@ export const OrdersScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [cancel, setCancel] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [apiError, setApiError] = useState(null);
+  const [show, setShow] = useState(false);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -107,8 +110,19 @@ export const OrdersScreen = ({ navigation }) => {
       }
     } catch (error) {
       // console.log(error);
+      if (error.message === "Network request failed") {
+        setShow(true);
+        setApiError(
+          "Network request failed. Please check your internet connection."
+        );
+      }
       setIsLoading(false);
     }
+  }
+
+  const showApiError = () =>{
+    setShow(true)
+    setApiError("Network request failed.")
   }
 
   useEffect(() => {
@@ -144,8 +158,8 @@ export const OrdersScreen = ({ navigation }) => {
       const jsonObj = JSON.parse(title);
       console.log("-----------------", jsonObj);
       if (
-        jsonObj.notification.title === "Order Complete" ||
-        jsonObj.notification.title === "Order Confirmed"
+        jsonObj.notification.title === "Order Completed" ||
+        jsonObj.notification.title === "Order Accepted"
       ) {
         fetchData();
       }
@@ -176,6 +190,7 @@ export const OrdersScreen = ({ navigation }) => {
         fetchData={fetchData}
         addtional_charge={item.additional_charge}
         instruction={item.instruction}
+        showApiError={showApiError}
       />
     );
   };
@@ -228,16 +243,19 @@ export const OrdersScreen = ({ navigation }) => {
         //   ))}
         // </ScrollView>
         <FlatList
-  data={orders}
-  keyExtractor={(item) => item.order_id}
-  showsVerticalScrollIndicator={false}
-  refreshControl={
-    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-  }
-  renderItem={({ item }) => renderItems(item)}
-/>
+          data={orders}
+          keyExtractor={(item) => item.order_id}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          renderItem={({ item }) => renderItems(item)}
+        />
 
       )}
+      <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
+        {apiError}
+      </Snackbar>
       <CheckInternet />
       <StatusBar style="dark" />
     </View>

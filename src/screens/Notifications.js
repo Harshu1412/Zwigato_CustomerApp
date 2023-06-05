@@ -13,6 +13,7 @@ import Titlebar from "../components/TitileBar";
 import { api } from "../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CheckInternet from "../components/CheckInternet";
+import { Snackbar } from "react-native-paper";
 // const DATA = [
 //   {
 //     id: 1,
@@ -38,6 +39,8 @@ const Notifications = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [refreshing, setRefreshing] = useState(false);
+  const [apiError, setApiError] = useState(null);
+  const [show, setShow] = useState(false);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -77,6 +80,12 @@ const Notifications = ({ navigation }) => {
       setIsLoading(false);
     } catch (error) {
       console.log(error);
+      if (error.message === "Network request failed") {
+        setShow(true);
+        setApiError(
+          "Network request failed. Please check your internet connection."
+        );
+      }
       setIsLoading(false);
     }
   };
@@ -113,7 +122,7 @@ const Notifications = ({ navigation }) => {
         </View>
       ) : (
         <View marginBottom={100}>
-          {data && data.length === 0 ? (
+          {data.length === 0 ? (
             <View style={styles.notification}>
               <Text style={styles.notificationText}>
                 No Notifications yet ⭐⭐
@@ -162,6 +171,9 @@ const Notifications = ({ navigation }) => {
           )}
         </View>
       )}
+      <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
+        {apiError}
+      </Snackbar>
 
       <CheckInternet />
     </View>

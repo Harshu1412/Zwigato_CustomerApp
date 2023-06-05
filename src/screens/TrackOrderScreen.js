@@ -60,7 +60,7 @@ useEffect(()=>{
     title = JSON.stringify(remoteMessage);
     const jsonObj = JSON.parse(title);
     console.log("-----------------", jsonObj);
-    if(remoteMessage.notification.title==="Order Cancel")
+    if(remoteMessage.notification.title==="Order Cancelled")
     {
        
       navigation.navigate("Main");
@@ -99,11 +99,7 @@ useEffect(()=>{
         const locationData = snapshot.data();
         setDriverLat(locationData.latitude);
         setDriverLong(locationData.longitude);
-      } else {
-        // Handle case when document is deleted
-        setDriverLat(null);
-        setDriverLong(null);
-      }
+      } 
     });
   };
 

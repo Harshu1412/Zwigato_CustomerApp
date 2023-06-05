@@ -16,13 +16,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api } from "../../Api";
 import CheckInternet from "../components/CheckInternet";
 import { useCallback } from "react";
+import { Snackbar } from "react-native-paper";
 
 const Ratings = ({ navigation }) => {
   const [data, setData] = useState();
   const [authToken, setAuthToken] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
+  const [apiError, setApiError] = useState(null);
+  const [show, setShow] = useState(false);
+  
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
@@ -59,6 +62,12 @@ const Ratings = ({ navigation }) => {
       setIsLoading(false);
     } catch (error) {
       console.log(error);
+      if (error.message === "Network request failed") {
+        setShow(true);
+        setApiError(
+          "Network request failed. Please check your internet connection."
+        );
+      }
       setIsLoading(false);
     }
   };
@@ -193,6 +202,9 @@ const Ratings = ({ navigation }) => {
           </View>
         )}
       </View>
+      <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
+        {apiError}
+      </Snackbar>
       <CheckInternet />
     </>
   );

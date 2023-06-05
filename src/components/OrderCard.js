@@ -31,7 +31,8 @@ export const OrderCard = (props) => {
     order_pin,
     driver_feedback,
     addtional_charge,
-    instruction
+    instruction,
+    showApiError
   } = props;
   // console.log(addtional_charge);
   const itemtype = item_type;
@@ -78,6 +79,7 @@ export const OrderCard = (props) => {
         fetchData();
       }
     } catch (error) {
+      showApiError();
       console.log(error);
     }
   };

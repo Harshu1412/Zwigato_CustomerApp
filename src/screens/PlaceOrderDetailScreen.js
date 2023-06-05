@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import React, { useState, useEffect, useLayoutEffect } from "react";
-import { TextInput, DefaultTheme } from "react-native-paper";
+import { TextInput, DefaultTheme, Snackbar } from "react-native-paper";
 import { Entypo } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 // import { useRoute } from "@react-navigation/native";
@@ -50,6 +50,9 @@ const PlaceOrderDetailScreen = ({ route }) => {
   const [distanceFee, setDistanceFee] = useState("");
   const [distance, setDistance] = useState("");
   const [itemPrice, setItemPrice] = useState("");
+  const [apiError, setApiError] = useState(null);
+  const [show, setShow] = useState(false);
+
   AsyncStorage.getItem("token").then((token) => {
     setAuthToken(token);
   });
@@ -82,6 +85,13 @@ const PlaceOrderDetailScreen = ({ route }) => {
       );
       setItemPrice(itemfee);
     } catch (error) {
+      setLoading(false)
+      if (error.message === "Network request failed") {
+        setShow(true);
+        setApiError(
+          "Network request failed. Please check your internet connection."
+        );
+      }
       console.log(error);
     }
   };
@@ -227,7 +237,7 @@ const PlaceOrderDetailScreen = ({ route }) => {
             </View>
             <View
               style={{
-                width: "92%",      
+                width: "92%",
                 paddingVertical: 10,
                 borderWidth: 1,
                 marginTop: 15,
@@ -363,16 +373,16 @@ const PlaceOrderDetailScreen = ({ route }) => {
                 height: 200,
                 marginTop: 14,
                 alignItems: "center",
-                
-             
+
+
               }}
             >
-             <Maps
-              pickupLong={pickupLong}
-              pickupLat={pickupLat}
-              dropLong={dropLong}
-              dropLat={dropLat}
-             />
+              <Maps
+                pickupLong={pickupLong}
+                pickupLat={pickupLat}
+                dropLong={dropLong}
+                dropLat={dropLat}
+              />
             </View>
             <View
               style={{
@@ -428,6 +438,9 @@ const PlaceOrderDetailScreen = ({ route }) => {
               />
             </View>
           </View>
+          <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
+            {apiError}
+          </Snackbar>
           <CheckInternet />
         </ScrollView>
       </>

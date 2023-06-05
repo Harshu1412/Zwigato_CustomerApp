@@ -5,13 +5,13 @@ import {
   Keyboard,
   FlatList,
   TouchableOpacity,
-  
-  BackHandler, Modal, Pressable, Alert, ScrollView,Dimensions,ActivityIndicator
+
+  BackHandler, Modal, Pressable, Alert, ScrollView, Dimensions, ActivityIndicator
 
 } from "react-native";
 import { api } from "../../Api";
 import React, { useEffect, useState } from "react";
-import { TextInput, DefaultTheme } from "react-native-paper";
+import { TextInput, DefaultTheme, Snackbar } from "react-native-paper";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import CustomCheckbox from "./../components/Checkbox";
@@ -22,20 +22,20 @@ import { Ionicons } from '@expo/vector-icons';
 import MapboxPlacesAutocomplete from "react-native-mapbox-places-autocomplete"
 import Mapbox from '@rnmapbox/maps';
 import CheckInternet from "../components/CheckInternet";
-import { Feather } from '@expo/vector-icons'; 
+import { Feather } from '@expo/vector-icons';
 
 Mapbox.setAccessToken('pk.eyJ1IjoiaGFyc2h1MTQxMiIsImEiOiJjbGdtMWN1MHMwMWMxM3FwcGZ3a3p2ajliIn0.sAqxecqbNtP8fVkl_9m9xQ');
 
-const deviceHeight=Dimensions.get("window").height
+const deviceHeight = Dimensions.get("window").height
 const TaskScreen1 = ({ navigation }) => {
-  
- 
+
+
   const [isFocused, setIsFocused] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [checkedItems, setCheckedItems] = useState([]);
   const [pickUp, setPickUp] = useState("");
   const [deliverTo, setDeliverTo] = useState("");
-  
+
   const [instruction, setInstruction] = useState("");
   const [pickUpError, setPickupError] = useState(false);
   const [deliverError, setDeliverError] = useState(false);
@@ -48,7 +48,10 @@ const TaskScreen1 = ({ navigation }) => {
   const [pickupLat, setPickupLat] = useState("")
   const [dropLong, setDropLong] = useState("")
   const [dropLat, setDropLat] = useState("")
-  const [loader,setLoader]=useState(true)
+  const [loader, setLoader] = useState(true)
+  const [apiError, setApiError] = useState(null);
+  const [show, setShow] = useState(false);
+
   const MAX_WORDS = 50;
 
   const [colorList, setColorList] = useState([]);
@@ -62,6 +65,13 @@ const TaskScreen1 = ({ navigation }) => {
       setColorList(json.data);
       setLoader(false);
     } catch (error) {
+      if (error.message === "Network request failed") {
+        setShow(true);
+        setApiError(
+          "Network request failed. Please check your internet connection."
+        );
+      }
+      setLoader(false);
       console.log(error);
     }
   };
@@ -73,7 +83,7 @@ const TaskScreen1 = ({ navigation }) => {
     setInstruction(text);
 
   };
-  
+
 
 
   useEffect(() => {
@@ -120,7 +130,7 @@ const TaskScreen1 = ({ navigation }) => {
   const handleSubmit = async () => {
     // validate form inputs
     let inst = instruction.trim();
-    console.log("-----",inst)
+    console.log("-----", inst)
     if (pickUp.length === 0) {
       setPickupError(true);
     }
@@ -164,7 +174,7 @@ const TaskScreen1 = ({ navigation }) => {
         body: JSON.stringify({
           pickup_from: pickUp,
           deliver_to: deliverTo,
-          instruction:inst,
+          instruction: inst,
           category_item_type: checkedItems,
           pickup_latitude: pickupLat,
           pickup_longitude: pickupLong,
@@ -199,7 +209,7 @@ const TaskScreen1 = ({ navigation }) => {
 
   return (
     <>
-     {loader && (
+      {loader && (
         <View>
           <Modal animationType="slide" transparent={true} visible={loader}>
             <View style={styles.centeredVieW}>
@@ -220,7 +230,7 @@ const TaskScreen1 = ({ navigation }) => {
             mode="outlined"
             editable={false}
             value={pickUp}
-            selection={{start: 0}}
+            selection={{ start: 0 }}
             onChangeText={(text) => setPickUp(text)}
             onFocus={handleFocus}
             onBlur={handleBlur}
@@ -241,7 +251,7 @@ const TaskScreen1 = ({ navigation }) => {
               backgroundColor: "white",
               borderColor: isFocused ? "#0C8A7B" : "#808080",
               color: "black",
-              
+
             }}
           />
         </Pressable>
@@ -254,9 +264,9 @@ const TaskScreen1 = ({ navigation }) => {
 
         >
           <View style={styles.centeredView}>
-           
-          
-           
+
+
+
             <View>
               <MapboxPlacesAutocomplete
                 id="origin"
@@ -279,20 +289,20 @@ const TaskScreen1 = ({ navigation }) => {
 
                 countryId="IN"
                 inputStyle={{
-                  backgroundColor:"white",
-                  borderWidth:1,
-                  borderRadius:10,
-                  height:"150%"
-                  
-              }}
-              containerStyle={{
-                marginTop:15,
-    
-                width: "92%",
-                
-                alignSelf: 'center',
-                
-              }}
+                  backgroundColor: "white",
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  height: "150%"
+
+                }}
+                containerStyle={{
+                  marginTop: 15,
+
+                  width: "92%",
+
+                  alignSelf: 'center',
+
+                }}
               />
             </View>
           </View>
@@ -310,7 +320,7 @@ const TaskScreen1 = ({ navigation }) => {
 
             label="Deliver to"
             mode="outlined"
-            selection={{start: 0}}
+            selection={{ start: 0 }}
             editable={false}
             value={deliverTo}
             onChangeText={(text) => {
@@ -366,15 +376,15 @@ const TaskScreen1 = ({ navigation }) => {
                 }}
                 countryId="IN"
                 inputStyle={{
-                    backgroundColor:"white",
-                    height:"150%",
-                    borderWidth:1,
-                    borderRadius:8
+                  backgroundColor: "white",
+                  height: "150%",
+                  borderWidth: 1,
+                  borderRadius: 8
                 }}
                 containerStyle={{
-                  marginTop:15,
+                  marginTop: 15,
                   width: "92%",
-                  alignSelf: 'center',   
+                  alignSelf: 'center',
                 }}
               />
             </View>
@@ -483,7 +493,7 @@ const TaskScreen1 = ({ navigation }) => {
           </View>
         )}
         {!modalVisible && (
-          <View style={{ marginTop: "4%", width: "90%",height:150 }}>
+          <View style={{ marginTop: "4%", width: "90%", height: 150 }}>
             <TextInput
               label="Instructions"
               mode="outlined"
@@ -491,9 +501,9 @@ const TaskScreen1 = ({ navigation }) => {
               onChangeText={handleTextChange}
               // onFocus={handleFocus}
               // onBlur={handleBlur}
-             
-             multiline
-             numberOfLines={6}
+
+              multiline
+              numberOfLines={6}
               maxLength={500}
               theme={{
                 ...DefaultTheme,
@@ -510,11 +520,11 @@ const TaskScreen1 = ({ navigation }) => {
             />
           </View>
         )}
-        {instruction.length >500 && (
-  <Text style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}>
-    Instructions should not exceed 500 characters.
-  </Text>
-)}
+        {instruction.length > 500 && (
+          <Text style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}>
+            Instructions should not exceed 500 characters.
+          </Text>
+        )}
 
         {instructionError ? (
           <Text style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}>
@@ -537,7 +547,10 @@ const TaskScreen1 = ({ navigation }) => {
             <Text style={{ color: "white" }}>Submit</Text>
           </TouchableOpacity>
         </View>
-        <CheckInternet/>
+        <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
+          {apiError}
+        </Snackbar>
+        <CheckInternet />
       </ScrollView>
     </>
 
@@ -577,8 +590,8 @@ const styles = StyleSheet.create({
   buttonView: {
     width: "92%",
     // marginTop: "auto",
-    position:"absolute",
-    top:deviceHeight-150
+    position: "absolute",
+    top: deviceHeight - 150
     ,
 
     // paddingVertical: 10,
@@ -587,7 +600,7 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-  
+
   },
   modalView: {
     margin: 20,

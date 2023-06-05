@@ -143,6 +143,13 @@ const EditProfile = ({ route }) => {
           } else {
           }
         } catch (error) {
+          if (error.message === "Network request failed") {
+            setShow(true);
+            setMessage(
+              "Network request failed. Please check your internet connection."
+            );
+            navigation.goBack();
+          }
           setMainLoading(false);
           // console.log("Error fetching data:", error);
         } finally {
@@ -260,6 +267,8 @@ const EditProfile = ({ route }) => {
 
       return;
     }
+    await AsyncStorage.setItem("name", name);
+    console.log(name);
     try {
       const nameValue = await AsyncStorage.getItem("name");
       const photoValue = await AsyncStorage.getItem("-photo");

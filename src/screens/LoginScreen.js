@@ -33,7 +33,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api } from "../../Api";
 import CheckInternet from "../components/CheckInternet";
 
-const deviceHeight=Dimensions.get("window").height
+const deviceHeight = Dimensions.get("window").height
 
 export const LoginScreen = () => {
   const navigation = useNavigation();
@@ -240,12 +240,12 @@ export const LoginScreen = () => {
               style={{
                 fontFamily: "Montserrat_400Regular",
               }}
-             
+
               mode="outlined"
               keyboardType={"numeric"}
               maxLength={15}
               placeholder="Phone"
-               
+
             />
           </PhoneInputView>
         </BorderView>
@@ -260,13 +260,13 @@ export const LoginScreen = () => {
         </ButtonViewHeight>
       </PhoneView>
       <View style={{
-  flexDirection: "row",
-  backgroundColor: "#fff",
-  justifyContent: "center",
-  position:"absolute",
-  top:deviceHeight-15,
-  alignSelf:"center"
-  }}>
+        flexDirection: "row",
+        backgroundColor: "#fff",
+        justifyContent: "center",
+        position: "absolute",
+        top: deviceHeight - 15,
+        alignSelf: "center"
+      }}>
         <Text style={{ fontFamily: "Montserrat_400Regular" }}>
           Don’t have an account?{" "}
         </Text>

@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   Pressable,
   BackHandler,
-  Alert,StyleSheet,Modal,ActivityIndicator
+  Alert, StyleSheet, Modal, ActivityIndicator
 } from "react-native";
 import React, {
   useCallback,
@@ -24,6 +24,7 @@ import { PickButton, WButton } from "../components/Button";
 import { FcmToken } from "../components/FcmToken";
 import { api } from "../../Api";
 import CheckInternet from "../components/CheckInternet";
+import { Snackbar } from "react-native-paper";
 
 const MainVView = styled.View`
   flex: 1;
@@ -90,7 +91,9 @@ const MainScreen = () => {
   const navigation = useNavigation();
   const [authToken, setAuthToken] = useState("");
   const [fcmToken, SetfcmToken] = useState("");
-  const [loader,setLoader]=useState(false);
+  const [loader, setLoader] = useState(false);
+  const [show, setShow] = useState(false);
+  const [apiError, setApiError] = useState(null);
 
   const handleFcm = (token) => {
     SetfcmToken(token);
@@ -102,7 +105,9 @@ const MainScreen = () => {
   const getProfilePicture = async () => {
     const photoUri = await AsyncStorage.getItem(`-photo`);
     const nameGet = await AsyncStorage.getItem("name");
-    setName(nameGet);
+    const firstName = (nameGet).split(" ")[0]
+        setName(firstName);
+    // setName(nameGet);
     setPhoto(photoUri);
     fetchData();
   };
@@ -112,10 +117,10 @@ const MainScreen = () => {
     }, [])
   );
 
-     useEffect(()=>{
-      fetchData();
+  useEffect(() => {
+    fetchData();
 
-     },[])
+  }, [])
 
 
   useEffect(() => {
@@ -150,16 +155,16 @@ const MainScreen = () => {
 
     try {
       const response = await fetch(api + "get", requestOptions);
-     
+
       const json = await response.json();
       // console.log(json);
       if (json.data.name) {
-        const firstName=(json.data.name).split(" ")[0]
+        const firstName = (json.data.name).split(" ")[0]
         setName(firstName);
         setPhoto(api + json.data.photo_uri);
         setLoader(false)
         // console.log(api+json.data.photo_uri);
-     
+
         AsyncStorage.setItem("-photo", api + json.data.photo_uri);
       } else {
         AsyncStorage.removeItem("name");
@@ -168,8 +173,14 @@ const MainScreen = () => {
       }
       // console.log(json)
     } catch (error) {
+      if (error.message === "Network request failed") {
+        setShow(true);
+        setApiError(
+          "Network request failed. Please check your internet connection."
+        );
+      }
       // console.log("Error: json or json.data is undefined or null.");
-    }finally{
+    } finally {
       setLoader(false)
     }
   }, [name]);
@@ -187,6 +198,12 @@ const MainScreen = () => {
       const response = await fetch(api + "fcmtoken", requestOptions);
       const json = await response.json();
     } catch (error) {
+      if (error.message === "Network request failed") {
+        setShow(true);
+        setApiError(
+          "Network request failed. Please check your internet connection."
+        );
+      }
       // console.log("Error: json or json.data is undefined or null.");
     }
   }, [fcmToken]);
@@ -203,7 +220,7 @@ const MainScreen = () => {
 
   return (
     <>
-    {loader && (
+      {loader && (
         <View>
           <Modal animationType="slide" transparent={true} visible={loader}>
             <View style={styles.centeredVieW}>
@@ -267,7 +284,7 @@ const MainScreen = () => {
                 />
               )}
             </View>
-            
+
             <Text
               style={{
                 fontFamily: "Montserrat_400Regular",
@@ -315,6 +332,10 @@ const MainScreen = () => {
               Here's how you can use this for your needs
             </Text>
           </FooterText>
+          <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
+            {apiError}
+          </Snackbar>
+          
           <CheckInternet />
 
           <StatusBar style="dark" />
@@ -327,7 +348,7 @@ const MainScreen = () => {
 export default MainScreen;
 
 const styles = StyleSheet.create({
-  
+
   centeredVieW: {
     flex: 1,
     justifyContent: "center",

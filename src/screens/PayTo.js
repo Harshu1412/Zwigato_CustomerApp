@@ -129,6 +129,12 @@ const Payment = () => {
         setSuccess(false);
       })
       .catch((err) => {
+        if (err.message === "Network request failed") {
+          setShow(true);
+          setApiError(
+            "Network request failed. Please check your internet connection."
+          );
+        }
         setMainLoading(false);
       })
       .finally(() => {
@@ -248,6 +254,12 @@ const Payment = () => {
           if (data.error.code == "incorrect_number") setNumberError(true);
         }
       } catch (error) {
+        if (error.message === "Network request failed") {
+          setShow(true);
+          setApiError(
+            "Network request failed. Please check your internet connection."
+          );
+        }
         console.log(error);
       } finally {
         setIsLoading(false);
