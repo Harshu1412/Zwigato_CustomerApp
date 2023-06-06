@@ -103,7 +103,7 @@ const Ratings = ({ navigation }) => {
           marginHorizontal: 10,
         }}
       >
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", }}>
           <Image
             source={{
               uri:
@@ -127,7 +127,7 @@ const Ratings = ({ navigation }) => {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 marginBottom: 12,
-                width: 280,
+                width: "76%",
               }}
             >
               <Stars numberOfStars={item.stars} maxStars={5} size={22} />
@@ -138,6 +138,7 @@ const Ratings = ({ navigation }) => {
                   color: "#828A89",
                   marginRight: 10,
                   fontFamily: "Montserrat_400Regular",
+                  
                 }}
               >
                 {moment(item.createdAt).fromNow()}
@@ -147,7 +148,7 @@ const Ratings = ({ navigation }) => {
               style={{
                 marginBottom: 20,
                 lineHeight: 20,
-                width: 300,
+                // width: 300,
                 color: "#828A89",
                 fontFamily: "Montserrat_400Regular",
               }}
@@ -181,7 +182,7 @@ const Ratings = ({ navigation }) => {
         <Titlebar title={"Rating and Reviews"} />
       </View>
       
-      <View style={{ flex: 1, alignItems: "center" }}>
+      <View style={{ flex: 1, }}>
         {data && data.length > 0 ? (
           <FlatList
             showsVerticalScrollIndicator={false}
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
     margin: 20,
 
     borderRadius: 20,
-    width: "70%",
+    // width: "70%",
     height: "20%",
     justifyContent: "center",
     alignItems: "center",

@@ -4,7 +4,10 @@ import {
   View,
   Image,
   TouchableOpacity,
-  ScrollView, Dimensions, ActivityIndicator, Modal
+  ScrollView,
+  Dimensions,
+  ActivityIndicator,
+  Modal,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -18,8 +21,7 @@ import App from "../../App";
 import CheckInternet from "../components/CheckInternet";
 import { ToastAndroid } from "react-native";
 
-const deviceHeight = Dimensions.get("window").height
-
+const deviceHeight = Dimensions.get("window").height;
 
 const Feedback = ({ route }) => {
   const { driver_orderId, fetchData } = route.params;
@@ -30,7 +32,7 @@ const Feedback = ({ route }) => {
   const [pressed, setPressed] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [driverName, setDriverName] = useState("");
-  const [image, setImage] = useState("")
+  const [image, setImage] = useState("");
   const [loader, setLoader] = useState(true);
   const [apiError, setApiError] = useState(null);
   const [show, setShow] = useState(false);
@@ -62,6 +64,7 @@ const Feedback = ({ route }) => {
     if (rating === 0 || comment.length === 0) {
       setSnackbarVisible(true);
     } else {
+      const trimmedComment = comment.trim();
       const requestOptions = {
         method: "POST",
         headers: {
@@ -69,7 +72,7 @@ const Feedback = ({ route }) => {
           Authorization: `Bearer ${authToken}`,
         },
         body: JSON.stringify({
-          comment: comment,
+          comment: trimmedComment,
           stars: rating,
           order_id: driver_orderId,
         }),
@@ -86,6 +89,7 @@ const Feedback = ({ route }) => {
               25,
               50
             );
+            console.log(trimmedComment);
             fetchData();
             navigation.goBack();
           });
@@ -107,16 +111,14 @@ const Feedback = ({ route }) => {
       authToken !== null &&
       authToken !== undefined &&
       authToken.length !== 0
-
     ) {
       getDriverData();
     }
-
   }, [authToken]);
 
   const getDriverData = async () => {
-    setLoader(true)
-    console.log("calls")
+    setLoader(true);
+    console.log("calls");
     // console.log("a gya mai", driver_orderId);
     const requestOptions = {
       method: "GET",
@@ -132,9 +134,8 @@ const Feedback = ({ route }) => {
       ).then((response) => {
         console.log(response.ok);
         response.json().then((data) => {
-          // console.log("f===================sfsdfsd", data);
 
-          const firstName = (data.data.name).split(" ")[0]
+          const firstName = data.data.name.split(" ")[0];
           setDriverName(firstName);
           // setDriverName(data.data.name);
           setImage(api + data.data.photo_uri);
@@ -149,32 +150,30 @@ const Feedback = ({ route }) => {
           "Network request failed. Please check your internet connection."
         );
       }
-      setLoader(false)
+      setLoader(false);
     }
   };
 
   return (
     <>
-      {loader && (<View >
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={loader}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <ActivityIndicator size={40} />
-
+      {loader && (
+        <View>
+          <Modal animationType="slide" transparent={true} visible={loader}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <ActivityIndicator size={40} />
+              </View>
             </View>
-          </View>
-        </Modal>
-
-      </View>)}
+          </Modal>
+        </View>
+      )}
       <>
         <View style={{ width: "90%", marginTop: 5, alignSelf: "center" }}>
           <Titlebar title={"Feedback"} />
         </View>
-        <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
+        >
           <View
             style={{
               height: "77%",
@@ -222,18 +221,27 @@ const Feedback = ({ route }) => {
               Feedback
             </Text>
             <Text>Share your feedback for driver</Text>
-
-            <CustomOutlinedTextInput
-              multiline={true}
-              onChangeText={(text) => setComment(text)}
-              value={comment}
-              label={"Comment"}
-              width="100%"
-            />
+            <View style={{ width: "100%", height: 200 }}>
+              <CustomOutlinedTextInput
+                numberOfLines={5}
+                multiline={true}
+                onChangeText={(text) => setComment(text)}
+                value={comment}
+                label={"Comment"}
+                width="100%"
+              />
+            </View>
           </View>
 
-          <View style={{ position: "absolute", top: deviceHeight - 140, width: "100%", justifyContent: "center", alignItems: "center", }}>
-
+          <View
+            style={{
+              position: "absolute",
+              top: deviceHeight - 140,
+              width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <TouchableOpacity
               onPress={() => handleSubmit()}
               style={{
@@ -243,7 +251,6 @@ const Feedback = ({ route }) => {
                 borderRadius: 7,
                 alignItems: "center",
                 justifyContent: "center",
-                marginVertical: 10,
               }}
             >
               <Text style={{ color: "white" }}>Submit</Text>
@@ -258,15 +265,16 @@ const Feedback = ({ route }) => {
               ? "Please enter a comment and rating"
               : ""}
           </Snackbar>
-          <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
+          <Snackbar
+            visible={show}
+            duration={1000}
+            onDismiss={() => setShow(false)}
+          >
             {apiError}
           </Snackbar>
           <CheckInternet />
         </ScrollView>
       </>
-
-
-
     </>
   );
 };
@@ -279,8 +287,8 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 22,
   },
   modalView: {
@@ -288,11 +296,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: "60%",
     height: "20%",
-    justifyContent: 'center',
-    alignItems: 'center',
-
+    justifyContent: "center",
+    alignItems: "center",
   },
-
 });
 
 export default Feedback;

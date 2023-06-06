@@ -35,7 +35,7 @@ const Maps = ({ pickupLong, pickupLat, dropLong, dropLat }) => {
                   </View>
                 </Mapbox.MarkerView>
 
-                <Mapbox.MarkerView
+                {/* <Mapbox.MarkerView
                   id="markerId"
                   coordinate={[pickupLong, pickupLat]}
                   anchor={{ x: 0.5, y: 1 }}
@@ -46,7 +46,7 @@ const Maps = ({ pickupLong, pickupLat, dropLong, dropLat }) => {
                       style={styles.markerImage}
                     />
                   </View>
-                </Mapbox.MarkerView>
+                </Mapbox.MarkerView> */}
 
                 <Mapbox.ShapeSource
                   id="lineSource"

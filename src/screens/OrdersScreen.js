@@ -150,7 +150,7 @@ export const OrdersScreen = ({ navigation }) => {
     const finalFormattedDate = `${formattedDate}, ${formattedTime}`;
     return finalFormattedDate;
   };
-  // console.log(orders[0].instruction);
+  console.log(orders[0]);
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
@@ -159,7 +159,8 @@ export const OrdersScreen = ({ navigation }) => {
       console.log("-----------------", jsonObj);
       if (
         jsonObj.notification.title === "Order Completed" ||
-        jsonObj.notification.title === "Order Accepted"
+        jsonObj.notification.title === "Order Accepted" || 
+        jsonObj.notification.title === "Order Cancelled"
       ) {
         fetchData();
       }

@@ -19,35 +19,56 @@ const AvatarView = styled.View`
 export const Sidebar = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("home");
   const navigation = useNavigation();
+  const [isNavigating, setIsNavigating] = useState(false);
   const handleTabPress = (tab) => {
-    setActiveTab(tab);
-    navigation.navigate("Main");
-    setActiveTab(null);
-    onClose();
+    if (!isNavigating) {
+      setIsNavigating(true)
+      setActiveTab(tab);
+      navigation.navigate("Main");
+      setActiveTab(null);
+      onClose();
+    }
+
   };
   const handleTab1Press = (tab) => {
-    setActiveTab(tab);
-    navigation.navigate("EditProfile");
-    setActiveTab(null);
-    onClose();
+    if (!isNavigating) {
+      setIsNavigating(true)
+      setActiveTab(tab);
+      navigation.navigate("EditProfile");
+      setActiveTab(null);
+      onClose();
+    }
+
   };
   const handleTab2Press = (tab) => {
-    setActiveTab(tab);
-    navigation.navigate("Orders");
-    setActiveTab(null);
-    onClose();
+    if (!isNavigating) {
+      setIsNavigating(true)
+      setActiveTab(tab);
+      navigation.navigate("Orders");
+      setActiveTab(null);
+      onClose();
+    }
+
   };
   const handleTab3Press = (tab) => {
-    setActiveTab(tab);
-    navigation.navigate("Notifications");
-    setActiveTab(null);
-    onClose();
+    if (!isNavigating) {
+      setIsNavigating(true)
+      setActiveTab(tab);
+      navigation.navigate("Notifications");
+      setActiveTab(null);
+      onClose();
+    }
+
   };
   const handleTab4Press = (tab) => {
-    setActiveTab(tab);
-    navigation.navigate("Ratings");
-    setActiveTab(null);
-    onClose();
+    if (!isNavigating) {
+      setIsNavigating(true)
+      setActiveTab(tab);
+      navigation.navigate("Ratings");
+      setActiveTab(null);
+      onClose();
+    }
+
   };
   const handleTab5Press = async (tab) => {
     setActiveTab(tab);
@@ -75,17 +96,11 @@ export const Sidebar = ({ isOpen, onClose }) => {
       });
       onClose();
     } catch (error) {
-      console.log("afsljkasjkfj",error);
+      console.log("afsljkasjkfj", error);
     }
 
 
   };
-  // const handleTab5Press = (tab) => {
-  //   setActiveTab(tab);
-  //   signOut(auth);
-  //   navigation.replace("Home")
-  //   onClose();
-  // };
   const [photo, setPhoto] = useState(null);
   const [name, setName] = useState("");
   const [authToken, setAuthToken] = useState("");
@@ -103,8 +118,14 @@ export const Sidebar = ({ isOpen, onClose }) => {
   useFocusEffect(
     useCallback(() => {
       getProfilePicture();
+      setIsNavigating(false)
     }, [])
   );
+  if (isOpen) {
+    if (isNavigating) {
+      setIsNavigating(false)
+    }
+  }
 
   const fetchData = useCallback(async () => {
     const requestOptions = {
@@ -123,11 +144,11 @@ export const Sidebar = ({ isOpen, onClose }) => {
       // console.log(response.ok);
       const json = await response.json();
       if (json.data.name) {
-        const firstName=(json.data.name).split(" ")[0]
+        const firstName = (json.data.name).split(" ")[0]
         setName(firstName);
-        setPhoto(api+json.data.photo_uri)
+        setPhoto(api + json.data.photo_uri)
         AsyncStorage.setItem("name", json.data.name);
-        AsyncStorage.setItem("-photo", api+json.data.photo_uri);
+        AsyncStorage.setItem("-photo", api + json.data.photo_uri);
       } else {
         AsyncStorage.removeItem("name");
       }

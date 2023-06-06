@@ -23,40 +23,9 @@ const HeaderPics = (props) => {
   useFocusEffect(
     useCallback(() => {
       getProfilePicture();
-    }, [authToken, name])
+    }, [name])
   );
 
-  const fetchData = useCallback(async () => {
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-      },
-    };
-
-    try {
-      const response = await fetch(`${api}/get`, requestOptions);
-      //   console.log(response.ok);
-      const json = await response.json();
-      const firstName=(json.data.name).split(" ")[0]
-        setName(firstName);
-      if (json.data.name) {
-        AsyncStorage.setItem("name", json.data.name);
-      } else {
-        AsyncStorage.removeItem("name");
-      }
-      // console.log(json.data)
-    } catch (error) {
-      console.log("Heder pic error");
-    }
-  }, [authToken, name]);
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchData();
-    }, [fetchData])
-  );
   return (
     <View
       style={{

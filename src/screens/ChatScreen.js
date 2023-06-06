@@ -14,7 +14,7 @@ import {
 import React, { useState, useEffect, useRef } from "react";
 import { TextInput } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons,MaterialIcons } from "@expo/vector-icons";
 import {
   addDoc,
   collection,
@@ -47,15 +47,26 @@ export const ChatScreen = ({ route }) => {
   const [data, setData] = useState("");
   const [id, setId] = useState(null);
   const [name, setName] = useState("");
-  const getName = () => {
-    AsyncStorage.getItem("name").then((name) => {
-      setName(name);
-      // console.log(name);
+  const [photo, setPhoto] = useState('')
+  
+
+  const getDetails = () => {
+
+    AsyncStorage.getItem('name').then((n) => {
+        //console.log("hello",n)
+        setName(n)
+
     });
-  };
-  useEffect(() => {
-    getName();
-  }, [name]);
+    AsyncStorage.getItem('-photo').then((p) => {
+        //console.log("hello" ,p)
+        setPhoto(p)
+
+    });
+}
+useEffect(() => {
+    getDetails();
+  },[])
+
 
   function makeid(length) {
     let result = "";
@@ -156,7 +167,59 @@ export const ChatScreen = ({ route }) => {
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}
     >
-      <HeaderPics title={name} />
+      {/* <HeaderPics title={name} /> */}
+      <View
+                style={{
+                    height: 52,
+                    marginTop: 10,
+                    backgroundColor: "white",
+                    borderRadius: 8,
+                    //width: "92%",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    alignSelf: "center",
+                    justifyContent: "center",
+                    //marginBottom: 20,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                    elevation: 5,
+                    marginHorizontal: "4%"
+                }}
+            >
+                <TouchableOpacity style={{ position: "absolute", left: 20, zIndex: 5 }} onPress={() => navigation.goBack()}>
+                    <MaterialIcons name="arrow-back-ios" size={24} color="grey" />
+                </TouchableOpacity>
+
+                <View style={styles.imageview}>
+                    {photo !== null ?
+                        <Image style={styles.image}
+                            source={{
+                                uri: photo
+                            }}
+                        /> :
+                        <Image style={styles.image}
+                            source={{
+                                uri: "https://banner2.cleanpng.com/20180725/hrj/kisspng-computer-icons-person-5b58a2a82e0cd6.9562737315325354641886.jpg"
+                            }}
+                        />
+                    }
+                    <View style={{ flexDirection: "row" }}>
+                        <Text style={{ fontSize: 16 }}>
+                            {name.indexOf(" ") !== -1
+                                ? name.substring(0, name.indexOf(" ")).length > 15
+                                    ? name.substring(0, 15) + "..."
+                                    : name.substring(0, name.indexOf(" "))
+                                : name}
+
+                        </Text>
+                    </View>
+                </View>
+            </View>
 
       {/* order view */}
 

@@ -123,6 +123,7 @@ const Payment = () => {
               navigation.navigate("Main");
             }, 2000);
           } else if (response.status == 400) {
+            console.log(data);
             console.log("errors");
           }
         });

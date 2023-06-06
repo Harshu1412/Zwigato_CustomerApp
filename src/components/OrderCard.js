@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     // width: "100%",
   },
   text: {
-    fontSize: 16,
+    fontSize: 14,
     lineHeight: 21,
     letterSpacing: 0.25,
     textAlign: "center",
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   canceltext: {
-    fontSize: 16,
+    fontSize: 14,
     lineHeight: 21,
     letterSpacing: 0.25,
     textAlign: "center",
@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   feedbackText: {
-    fontSize: 16,
+    fontSize: 14,
     lineHeight: 21,
     letterSpacing: 0.25,
     textAlign: "center",
