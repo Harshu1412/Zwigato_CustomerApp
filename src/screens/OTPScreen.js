@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, BackHandler, ActivityIndicator } from "react-native";
+import { Text,Modal,View, TouchableOpacity, BackHandler, ActivityIndicator } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -163,6 +163,14 @@ export const OtpScreen = ({ route }) => {
   }, []);
 
   return (
+    <>
+    {isLoading && (
+        <View>
+          <Modal animationType="slide" transparent={true} visible={isLoading}>
+            
+          </Modal>
+        </View>
+      )}
     <Main flex={1}>
       <FirebaseRecaptchaVerifierModal
         ref={recaptchaVerifier}
@@ -276,5 +284,6 @@ export const OtpScreen = ({ route }) => {
       <CheckInternet/>
       <StatusBar style="light" />
     </Main>
+    </>
   );
 };

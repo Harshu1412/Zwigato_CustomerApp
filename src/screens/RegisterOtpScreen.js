@@ -1,5 +1,5 @@
 import {
-  Text,
+  Text,View,Modal,
   TouchableOpacity,
   BackHandler,
   ActivityIndicator,
@@ -236,6 +236,14 @@ export const RegisterOtpScreen = ({ route }) => {
     }
   };
   return (
+    <>
+     {isLoading && (
+        <View>
+          <Modal animationType="slide" transparent={true} visible={isLoading}>
+            
+          </Modal>
+        </View>
+      )}
     <Main flex={1}>
       <FirebaseRecaptchaVerifierModal
         ref={recaptchaVerifier}
@@ -359,5 +367,6 @@ export const RegisterOtpScreen = ({ route }) => {
       </Snackbar>
       <StatusBar style="light" />
     </Main>
+    </>
   );
 };

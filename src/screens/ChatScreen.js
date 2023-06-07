@@ -9,7 +9,7 @@ import {
   Keyboard,
   StyleSheet,
   Alert,
-  StatusBar,
+  StatusBar,Modal,ActivityIndicator
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { TextInput } from "react-native";
@@ -48,6 +48,7 @@ export const ChatScreen = ({ route }) => {
   const [id, setId] = useState(null);
   const [name, setName] = useState("");
   const [photo, setPhoto] = useState('')
+  const [isLoading,setIsLoading]=useState("true")
   
 
   const getDetails = () => {
@@ -60,12 +61,15 @@ export const ChatScreen = ({ route }) => {
     AsyncStorage.getItem('-photo').then((p) => {
         //console.log("hello" ,p)
         setPhoto(p)
+        setIsLoading(false);
 
     });
 }
 useEffect(() => {
+    setIsLoading(true)
     getDetails();
   },[])
+  
 
 
   function makeid(length) {
@@ -160,6 +164,19 @@ useEffect(() => {
       });
   };
   return (
+    <>
+    {isLoading && (
+        <View>
+          <Modal animationType="slide" transparent={true} visible={isLoading}>
+            <View style={styles.centeredVieW}>
+              <View style={styles.modalVieW}>
+                <ActivityIndicator size={40} />
+              </View>
+            </View>
+          </Modal>
+        </View>
+      )}
+
     <View
       style={{
         flex: 1,
@@ -196,7 +213,7 @@ useEffect(() => {
                 </TouchableOpacity>
 
                 <View style={styles.imageview}>
-                    {photo !== null ?
+                    {photo !== "" ?
                         <Image style={styles.image}
                             source={{
                                 uri: photo
@@ -346,6 +363,7 @@ useEffect(() => {
         translucent={true}
       />
     </View>
+    </>
   );
 };
 

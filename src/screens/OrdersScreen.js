@@ -150,7 +150,7 @@ export const OrdersScreen = ({ navigation }) => {
     const finalFormattedDate = `${formattedDate}, ${formattedTime}`;
     return finalFormattedDate;
   };
-  console.log(orders[0]);
+  // console.log(orders[0]);
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {

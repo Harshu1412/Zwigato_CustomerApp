@@ -312,7 +312,7 @@ const Payment = () => {
           </Modal>
         </View>
       )}
-       {mainLoading && (
+      {mainLoading && (
         <View>
           <Modal animationType="slide" transparent={true} visible={mainLoading}>
             <View style={styles.centeredView}>
@@ -324,16 +324,16 @@ const Payment = () => {
         </View>
       )}
 
-     
+
 
       {showLottie ? (
         <Modal animationType="slide" transparent={true} visible={showLottie}>
-        <View style={styles.centeredView}>
-          <PaymentLottie />
-        </View>
-      </Modal>
-        
-       
+          <View style={styles.centeredView}>
+            <PaymentLottie />
+          </View>
+        </Modal>
+
+
       ) : (
         <View style={{ flex: 1 }}>
           <View style={{ marginHorizontal: "5%" }}>
@@ -373,7 +373,7 @@ const Payment = () => {
                       fontFamily: "Montserrat_600SemiBold",
                     }}
                   >
-                    XXXX {item.card_no}
+                    XXXX {item.card_no} 
                   </Text>
                 </View>
                 <View style={CustomStyles.selectItem}>
@@ -433,15 +433,15 @@ const Payment = () => {
               {/* {isMakingPayment ? ( // Show loading indicator if making payment
                 <ActivityIndicator color="white" size="large" />
               ) : ( */}
-                <Text
-                  style={{
-                    fontFamily: "Montserrat_600SemiBold",
-                    color: "white",
-                    marginVertical: 5,
-                  }}
-                >
-                  Make Payment
-                </Text>
+              <Text
+                style={{
+                  fontFamily: "Montserrat_600SemiBold",
+                  color: "white",
+                  marginVertical: 5,
+                }}
+              >
+                Make Payment
+              </Text>
               {/* )} */}
             </TouchableOpacity>
           ) : (
@@ -562,18 +562,23 @@ const Payment = () => {
                     ) : null}
                   </View>
                 </View>
-                <TouchableOpacity
-                  onPress={() => handleAddItem()}
-                  style={CustomStyles.addNewCardButtonContainer}
-                >
-                  {isLoading ? (
-                    <ActivityIndicator color="white" size="large" /> // Show the activity indicator while loading
-                  ) : (
-                    <Text style={CustomStyles.addNewCardButtonText}>
-                      Add Card
-                    </Text>
-                  )}
-                </TouchableOpacity>
+                {isLoading ? (
+                  <TouchableOpacity style={CustomStyles.addNewCardButtonContainer}>
+
+                    <ActivityIndicator color="white" size="large" />
+                  </TouchableOpacity>
+                ) :
+                  <>
+                    <TouchableOpacity
+                      onPress={() => handleAddItem()}
+                      style={CustomStyles.addNewCardButtonContainer}
+                    >
+                      <Text style={CustomStyles.addNewCardButtonText}>
+                        Add Card
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                }
               </View>
             </View>
             <Snackbar
