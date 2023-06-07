@@ -14,7 +14,24 @@ const Logo = (props) => {
       source={{
         uri: "https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png",
       }}
-      style={{ height: 10, width: 35, marginRight: 20 }}
+      style={{ height: 10, width: 40, marginRight: 20 }}
+    />
+  );
+};
+export const Logo2 = (props) => {
+  return props.brand === "mastercard" ? (
+    <Image
+      source={{
+        uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/1920px-Mastercard_2019_logo.svg.png",
+      }}
+      style={{ height: 18, width: 35, marginRight: 20 }}
+    />
+  ) : (
+    <Image
+      source={{
+        uri: "https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png",
+      }}
+      style={{ height: 14, width: 40, marginRight: 20 }}
     />
   );
 };

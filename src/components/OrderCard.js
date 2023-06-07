@@ -32,7 +32,8 @@ export const OrderCard = (props) => {
     driver_feedback,
     addtional_charge,
     instruction,
-    showApiError
+    showApiError,
+    lastDigit
   } = props;
   // console.log(addtional_charge);
   const itemtype = item_type;
@@ -219,7 +220,8 @@ export const OrderCard = (props) => {
                 completed_timing,
                 addtional_charge,
                 instruction,
-                order_pin
+                order_pin,
+                lastDigit
               });
             }}
           >

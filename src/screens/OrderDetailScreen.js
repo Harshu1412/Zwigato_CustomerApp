@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet,ScrollView } from "react-native";
 import React from "react";
 import { Container } from "../styles/styles";
 import { Header } from "../components/Header";
@@ -7,6 +7,7 @@ import { Button } from "../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import Titlebar from "../components/TitileBar";
 import CheckInternet from "../components/CheckInternet";
+import Logo, { Logo2 } from "../components/Logo";
 
 export const OrderDetailScreen = ({ route }) => {
   const {
@@ -27,18 +28,20 @@ export const OrderDetailScreen = ({ route }) => {
     completed_timing,
     addtional_charge,
     instruction,
-    order_pin
+    order_pin,
+    lastDigit
+
   } = route.params;
-  console.log(order_pin);
   // console.log(completed_timing);
   const navigation = useNavigation();
   return (
-    <View marginTop={10} flex={1}>
+    <>
       <View marginHorizontal="5%">
         <Titlebar title="Order Details" />
       </View>
+    <ScrollView flex={1}>
       {/* <Header title="Order details" /> */}
-      <View paddingHorizontal={25} marginVertical={20}>
+      <View paddingHorizontal={25} marginVertical={10}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text
             style={{
@@ -234,6 +237,49 @@ export const OrderDetailScreen = ({ route }) => {
         </View>
       </View>
 
+      <View
+        style={{
+          marginTop: 15,
+          backgroundColor: "white",
+          borderRadius: 8,
+          marginHorizontal:"5%",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 4,
+          marginBottom:10
+        }}
+      >
+        <View style={{ marginTop: 10, marginLeft: 15 }}>
+          <Text
+            style={{
+              fontSize: 14,
+              fontFamily: "Montserrat_600SemiBold",
+            }}
+          >
+            Payment Method
+          </Text>
+        </View>
+        <View style={{  marginLeft: 15, marginBottom: 5, flexDirection:'row', paddingVertical:10 }}>
+        {/* <Logo brand={item.name} /> */}
+        <Logo2 brand="mastercard" />
+          <Text
+            style={{
+              fontSize: 14,
+              fontFamily: "Montserrat_400Regular",
+            }}
+          >
+             XXXX {lastDigit}
+          </Text>
+        </View>
+      </View>
+
+      <CheckInternet />
+    </ScrollView>
       {status === "Accepted" ? (
         <View
           padding={16}
@@ -295,8 +341,7 @@ export const OrderDetailScreen = ({ route }) => {
           />
         </View>
       )}
-      <CheckInternet />
-    </View>
+    </>
   );
 };
 

@@ -120,16 +120,19 @@ useEffect(() => {
   }, []);
 
   const sendmessage = async () => {
-    if (!data) {
+    const msg =data.trim()
+    if (!msg) {
       // console.log("Kuch daal do msg mein");
       Alert.alert("Please Fill Something !");
+      setData("")
       return;
     }
+    setData("");
     try {
       const docRef = await addDoc(
         collection(db, `Chat_Customer/${chatId}/messages`),
         {
-          message: data,
+          message: msg,
           timestamp: serverTimestamp(),
           senderName: name,
           messageId: Date.now(),
@@ -137,7 +140,7 @@ useEffect(() => {
           id: makeid(26),
         }
       );
-      setData("");
+      
       //setScroll(true)
       // sendtoapi();
       // console.log("Document written with ID: ", docRef.id);

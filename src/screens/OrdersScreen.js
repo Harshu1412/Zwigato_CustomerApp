@@ -97,7 +97,7 @@ export const OrdersScreen = ({ navigation }) => {
     };
     try {
       const response = await fetch(`${api}orders/${list}`, requestOptions);
-      console.log(response.ok);
+      // console.log(response.ok);
       if (response.ok) {
         const data = await response.json();
 
@@ -150,7 +150,7 @@ export const OrdersScreen = ({ navigation }) => {
     const finalFormattedDate = `${formattedDate}, ${formattedTime}`;
     return finalFormattedDate;
   };
-  // console.log(orders[0]);
+  // console.log(orders[0].Payment.last4);
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
@@ -168,6 +168,16 @@ export const OrdersScreen = ({ navigation }) => {
     return unsubscribe;
   }, [list]);
   const renderItems = (item) => {
+    // console.log(item.Payment);
+    let lastDigit = "";
+    if(item.Payment !== null){
+
+      lastDigit = item.Payment.last4
+      if(lastDigit === null || lastDigit === ""){
+        lastDigit ="XXXX"
+      }
+      // console.log(lastDigit);
+    }
     return (
       <OrderCard
         key={item.order_id}
@@ -192,6 +202,7 @@ export const OrdersScreen = ({ navigation }) => {
         addtional_charge={item.additional_charge}
         instruction={item.instruction}
         showApiError={showApiError}
+        lastDigit = {lastDigit}
       />
     );
   };
