@@ -168,16 +168,23 @@ export const OrdersScreen = ({ navigation }) => {
     return unsubscribe;
   }, [list]);
   const renderItems = (item) => {
-    // console.log(item.Payment);
+    // console.log(item.Card);
     let lastDigit = "";
-    if(item.Payment !== null){
+    if(item.Card !== null){
 
-      lastDigit = item.Payment.last4
+      lastDigit = item.Card.last4
+      cardName = item.Card.name
       if(lastDigit === null || lastDigit === ""){
-        lastDigit ="XXXX"
+        lastDigit ="4242"
       }
-      // console.log(lastDigit);
+      if(cardName === null || cardName === ""){
+        cardName = "visa"
+      }
+    } else{
+      lastDigit = "4242"
+      cardName = "mastercard"
     }
+    // console.log(cardName);
     return (
       <OrderCard
         key={item.order_id}
@@ -203,6 +210,7 @@ export const OrdersScreen = ({ navigation }) => {
         instruction={item.instruction}
         showApiError={showApiError}
         lastDigit = {lastDigit}
+        cardName = {cardName}
       />
     );
   };

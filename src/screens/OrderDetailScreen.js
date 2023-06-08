@@ -29,7 +29,8 @@ export const OrderDetailScreen = ({ route }) => {
     addtional_charge,
     instruction,
     order_pin,
-    lastDigit
+    lastDigit,
+    cardName
 
   } = route.params;
   // console.log(completed_timing);
@@ -266,7 +267,7 @@ export const OrderDetailScreen = ({ route }) => {
         </View>
         <View style={{  marginLeft: 15, marginBottom: 5, flexDirection:'row', paddingVertical:10, alignItems:'center' }}>
         {/* <Logo brand={item.name} /> */}
-        <Logo2 brand="mastercardd" />
+        <Logo2 brand={cardName} />
           <Text
             style={{
               fontSize: 14,
