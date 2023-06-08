@@ -41,7 +41,7 @@ export const OrderDetailScreen = ({ route }) => {
       </View>
     <ScrollView flex={1}>
       {/* <Header title="Order details" /> */}
-      <View paddingHorizontal={25} marginVertical={10}>
+      <View paddingHorizontal="5.3%" marginVertical={10}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text
             style={{
@@ -264,13 +264,14 @@ export const OrderDetailScreen = ({ route }) => {
             Payment Method
           </Text>
         </View>
-        <View style={{  marginLeft: 15, marginBottom: 5, flexDirection:'row', paddingVertical:10 }}>
+        <View style={{  marginLeft: 15, marginBottom: 5, flexDirection:'row', paddingVertical:10, alignItems:'center' }}>
         {/* <Logo brand={item.name} /> */}
-        <Logo2 brand="mastercard" />
+        <Logo2 brand="mastercardd" />
           <Text
             style={{
               fontSize: 14,
               fontFamily: "Montserrat_400Regular",
+              textAlign:'center',
             }}
           >
              XXXX {lastDigit}

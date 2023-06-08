@@ -269,7 +269,7 @@ const MainScreen = () => {
               <CustomSidebar />
             </View>
 
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
+            <TouchableOpacity onPress={()=> navigation.navigate('EditProfile')} style={{ justifyContent: "center", alignItems: "center" }}>
               {!photo && (
                 <Avatar
                   rounded
@@ -287,7 +287,7 @@ const MainScreen = () => {
                   backgroundColor="#2182BD"
                 />
               )}
-            </View>
+            </TouchableOpacity>
 
             <Text
               style={{
@@ -296,7 +296,7 @@ const MainScreen = () => {
                 marginLeft: 5,
               }}
             >
-              {name}
+              {name && name.length > 10 ? name.slice(0, 10) + "..." : name}
             </Text>
           </View>
           <PhotoView>

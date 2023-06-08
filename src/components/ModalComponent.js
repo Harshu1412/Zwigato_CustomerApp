@@ -202,7 +202,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
             width: 500,
             marginLeft: -20,
             marginTop: 10,
-            width: "120%",
+            width: "115%",
             marginBottom: 10,
           }}
         >

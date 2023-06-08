@@ -73,7 +73,8 @@ const BottomSheetContents = ({ driverOrderId,driverPhoto, carNumber, pickupLocat
           />
         }
         <View marginLeft={10} justifyContent="center">
-          <Text  style={{fontSize:20}}>{driverName} </Text>
+          {/* <Text  style={{fontSize:20}}>{driverName} </Text> */}
+          <Text  style={{fontSize:20}}>{driverName && driverName.length > 10 ? driverName.slice(0, 10) + "..." : driverName}</Text>
           <Text style={{fontSize:11}}>PIN: {order_pin}</Text>
           <Text style={{fontSize:11}}># {driverOrderId}</Text>
         </View>

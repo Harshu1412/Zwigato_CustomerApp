@@ -9,12 +9,12 @@ import {
   Keyboard,
   StyleSheet,
   Alert,
-  StatusBar,Modal,ActivityIndicator
+  StatusBar, Modal, ActivityIndicator
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { TextInput } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { Ionicons,MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import {
   addDoc,
   collection,
@@ -48,28 +48,28 @@ export const ChatScreen = ({ route }) => {
   const [id, setId] = useState(null);
   const [name, setName] = useState("");
   const [photo, setPhoto] = useState('')
-  const [isLoading,setIsLoading]=useState("true")
-  
+  const [isLoading, setIsLoading] = useState("true")
+
 
   const getDetails = () => {
 
     AsyncStorage.getItem('name').then((n) => {
-        //console.log("hello",n)
-        setName(n)
+      //console.log("hello",n)
+      setName(n)
 
     });
     AsyncStorage.getItem('-photo').then((p) => {
-        //console.log("hello" ,p)
-        setPhoto(p)
-        setIsLoading(false);
+      //console.log("hello" ,p)
+      setPhoto(p)
+      setIsLoading(false);
 
     });
-}
-useEffect(() => {
-    setIsLoading(true)
+  }
+  useEffect(() => {
+    // setIsLoading(true)
     getDetails();
-  },[])
-  
+  }, [])
+
 
 
   function makeid(length) {
@@ -120,7 +120,7 @@ useEffect(() => {
   }, []);
 
   const sendmessage = async () => {
-    const msg =data.trim()
+    const msg = data.trim()
     if (!msg) {
       // console.log("Kuch daal do msg mein");
       Alert.alert("Please Fill Something !");
@@ -140,7 +140,7 @@ useEffect(() => {
           id: makeid(26),
         }
       );
-      
+
       //setScroll(true)
       // sendtoapi();
       // console.log("Document written with ID: ", docRef.id);
@@ -168,7 +168,7 @@ useEffect(() => {
   };
   return (
     <>
-    {isLoading && (
+      {isLoading && (
         <View>
           <Modal animationType="slide" transparent={true} visible={isLoading}>
             <View style={styles.centeredVieW}>
@@ -180,192 +180,194 @@ useEffect(() => {
         </View>
       )}
 
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: "#F3F3F3",
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}
-    >
-      {/* <HeaderPics title={name} /> */}
       <View
-                style={{
-                    height: 52,
-                    marginTop: 10,
-                    backgroundColor: "white",
-                    borderRadius: 8,
-                    //width: "92%",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    alignSelf: "center",
-                    justifyContent: "center",
-                    //marginBottom: 20,
-                    shadowColor: "#000",
-                    shadowOffset: {
-                        width: 0,
-                        height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-                    elevation: 5,
-                    marginHorizontal: "4%"
-                }}
-            >
-                <TouchableOpacity style={{ position: "absolute", left: 20, zIndex: 5 }} onPress={() => navigation.goBack()}>
-                    <MaterialIcons name="arrow-back-ios" size={24} color="grey" />
-                </TouchableOpacity>
+        style={{
+          flex: 1,
+          backgroundColor: "#F3F3F3",
+          paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+        }}
+      >
+        {/* <HeaderPics title={name} /> */}
+        <View
+          style={{
+            height: 52,
+            marginTop: 10,
+            backgroundColor: "white",
+            borderRadius: 8,
+            //width: "92%",
+            flexDirection: "row",
+            alignItems: "center",
+            alignSelf: "center",
+            justifyContent: "center",
+            //marginBottom: 20,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
+            marginHorizontal: "4%"
+          }}
+        >
+          <TouchableOpacity style={{ position: "absolute", left: 20, zIndex: 5 }} onPress={() => navigation.goBack()}>
+            <MaterialIcons name="arrow-back-ios" size={24} color="grey" />
+          </TouchableOpacity>
 
-                <View style={styles.imageview}>
-                    {photo !== "" ?
-                        <Image style={styles.image}
-                            source={{
-                                uri: photo
-                            }}
-                        /> :
-                        <Image style={styles.image}
-                            source={{
-                                uri: "https://banner2.cleanpng.com/20180725/hrj/kisspng-computer-icons-person-5b58a2a82e0cd6.9562737315325354641886.jpg"
-                            }}
-                        />
-                    }
-                    <View style={{ flexDirection: "row" }}>
-                        <Text style={{ fontSize: 16 }}>
-                            {name.indexOf(" ") !== -1
+          <View style={styles.imageview}>
+            {photo !== "" ?
+              <Image style={styles.image}
+                source={{
+                  uri: photo
+                }}
+              /> :
+              <Image style={styles.image}
+                source={{
+                  uri: "https://banner2.cleanpng.com/20180725/hrj/kisspng-computer-icons-person-5b58a2a82e0cd6.9562737315325354641886.jpg"
+                }}
+              />
+            }
+            <View style={{ flexDirection: "row" }}>
+              <Text style={{ fontSize: 16, fontFamily: 'Montserrat_400Regular' }}>
+                {/* {name.indexOf(" ") !== -1
                                 ? name.substring(0, name.indexOf(" ")).length > 15
                                     ? name.substring(0, 15) + "..."
                                     : name.substring(0, name.indexOf(" "))
-                                : name}
+                                : name} */}
 
-                        </Text>
-                    </View>
-                </View>
+                {name && name.length > 10 ? name.slice(0, 10) + "..." : name}
+
+              </Text>
             </View>
-
-      {/* order view */}
-
-      <View
-        style={{
-          borderRadius: 10,
-          margin: 10,
-          width: "90%",
-          alignSelf: "center",
-          backgroundColor: "white",
-          padding: 10,
-        }}
-      >
-        <View style={{ flexDirection: "row" }}>
-          <Text
-            style={{
-              flex: 1,
-              marginTop: 10,
-              marginLeft: 10,
-              fontSize: 14,
-              fontWeight: "bold",
-              color: "#394F6B",
-            }}
-          >
-            Order #{orderId}{" "}
-          </Text>
-          <View
-            style={{
-              marginTop: 10,
-            }}
-          >
-            {status === "Accepted" && (
-              <Text style={styles.statusTextAccepted}>{status}</Text>
-            )}
-            {status === "Completed" && (
-              <Text style={styles.statusTextCompleted}>{status}</Text>
-            )}
-            {status === "Cancelled" && (
-              <Text style={styles.statusTextCancelled}>{status}</Text>
-            )}
-            {status === "Pending" && (
-              <Text style={styles.statusText}>{status}</Text>
-            )}
           </View>
         </View>
-        <View>
-          <Text style={{ marginLeft: 10, fontSize: 14 }}>
-            Item Type :{" "}
-            <Text style={{ fontSize: 14, fontWeight: "bold", fontSize: 14 }}>
-              {item_type}
-            </Text>{" "}
-          </Text>
-        </View>
+
+        {/* order view */}
+
         <View
           style={{
-            flexDirection: "row",
-            paddingLeft: 5,
-            paddingBottom: 5,
-            paddingTop: 5,
+            borderRadius: 10,
+            margin: 10,
+            width: "90%",
+            alignSelf: "center",
+            backgroundColor: "white",
+            padding: 10,
           }}
         >
-          <Ionicons name="location-sharp" size={15.82} color="#BFBFBF" />
-          <Text style={{ fontSize: 12, flexWrap: "wrap", maxWidth: "90%" }}>
-            {" "}
-            {Pickup_from}{" "}
-          </Text>
+          <View style={{ flexDirection: "row" }}>
+            <Text
+              style={{
+                flex: 1,
+                marginTop: 10,
+                marginLeft: 10,
+                fontSize: 14,
+                fontWeight: "bold",
+                color: "#394F6B",
+              }}
+            >
+              Order #{orderId}{" "}
+            </Text>
+            <View
+              style={{
+                marginTop: 10,
+              }}
+            >
+              {status === "Accepted" && (
+                <Text style={styles.statusTextAccepted}>{status}</Text>
+              )}
+              {status === "Completed" && (
+                <Text style={styles.statusTextCompleted}>{status}</Text>
+              )}
+              {status === "Cancelled" && (
+                <Text style={styles.statusTextCancelled}>{status}</Text>
+              )}
+              {status === "Pending" && (
+                <Text style={styles.statusText}>{status}</Text>
+              )}
+            </View>
+          </View>
+          <View>
+            <Text style={{ marginLeft: 10, fontSize: 14 }}>
+              Item Type :{" "}
+              <Text style={{ fontSize: 14, fontWeight: "bold", fontSize: 14 }}>
+                {item_type}
+              </Text>{" "}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              paddingLeft: 5,
+              paddingBottom: 5,
+              paddingTop: 5,
+            }}
+          >
+            <Ionicons name="location-sharp" size={15.82} color="#BFBFBF" />
+            <Text style={{ fontSize: 12, flexWrap: "wrap", maxWidth: "90%" }}>
+              {" "}
+              {Pickup_from}{" "}
+            </Text>
+          </View>
+          <View
+            style={{ flexDirection: "row", marginBottom: 15, paddingLeft: 5 }}
+          >
+            <Ionicons name="location-sharp" size={15.82} color="#FF9C1C" />
+            <Text style={{ fontSize: 12, flexWrap: "wrap", maxWidth: "90%" }}>
+              {" "}
+              {Deliver_To}{" "}
+            </Text>
+          </View>
         </View>
+
+        {/* order view closed */}
+
+        <View style={{ flex: 1 }}>
+          <ChatMessage idchat={id} user_id={user_id} />
+        </View>
+
         <View
-          style={{ flexDirection: "row", marginBottom: 15, paddingLeft: 5 }}
-        >
-          <Ionicons name="location-sharp" size={15.82} color="#FF9C1C" />
-          <Text style={{ fontSize: 12, flexWrap: "wrap", maxWidth: "90%" }}>
-            {" "}
-            {Deliver_To}{" "}
-          </Text>
-        </View>
-      </View>
-
-      {/* order view closed */}
-
-      <View style={{ flex: 1 }}>
-        <ChatMessage idchat={id} user_id={user_id} />
-      </View>
-
-      <View
-        style={{
-          borderRadius: 10,
-          padding: 10,
-          flexDirection: "row",
-          backgroundColor: "white",
-          marginTop: 5,
-          margin: 15,
-          justifyContent: "flex-end",
-        }}
-      >
-        <TextInput
-          value={data}
-          onChangeText={(t) => {
-            setData(t);
-          }}
-          style={{ flex: 1, alignSelf: "flex-start" }}
-          placeholder="Type a message"
-        />
-        <TouchableOpacity
-          onPress={() => {
-            {
-              sendmessage();
-            }
+          style={{
+            borderRadius: 10,
+            padding: 10,
+            flexDirection: "row",
+            backgroundColor: "white",
+            marginTop: 5,
+            margin: 15,
+            justifyContent: "flex-end",
           }}
         >
-          <Feather
-            style={{ alignSelf: "flex-end" }}
-            name="send"
-            size={24}
-            color="black"
+          <TextInput
+            value={data}
+            onChangeText={(t) => {
+              setData(t);
+            }}
+            style={{ flex: 1, alignSelf: "flex-start" }}
+            placeholder="Type a message"
           />
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              {
+                sendmessage();
+              }
+            }}
+          >
+            <Feather
+              style={{ alignSelf: "flex-end" }}
+              name="send"
+              size={24}
+              color="black"
+            />
+          </TouchableOpacity>
+        </View>
+        <CheckInternet />
+        <StatusBar
+          barStyle="dark-content"
+          hidden={false}
+          backgroundColor="#F3F3F3"
+          translucent={true}
+        />
       </View>
-      <CheckInternet />
-      <StatusBar
-        barStyle="dark-content"
-        hidden={false}
-        backgroundColor="#F3F3F3"
-        translucent={true}
-      />
-    </View>
     </>
   );
 };
