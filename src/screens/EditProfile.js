@@ -196,9 +196,9 @@ const EditProfile = ({ route }) => {
         try {
           const nameValue = await AsyncStorage.getItem("name");
           const photoValue = await AsyncStorage.getItem("-photo");
-          
+
           if (nameValue === null || photoValue === null) {
-            
+
             if (photoValue === null) {
               setPhotoError("Please upload photo");
               return true;
@@ -208,10 +208,10 @@ const EditProfile = ({ route }) => {
             }
             // return true; // Prevent the back action
           }
-          
+
           console.log(nameValue); // This will log the stored value of "name"
           console.log(nameValue.length); // This will log the length of the stored value
-          
+
           navigation.goBack();
           return true;
         } catch (error) {
@@ -229,7 +229,7 @@ const EditProfile = ({ route }) => {
     );
 
     return () => backHandler.remove();
-  }, [name, address, email, buttonText,photo]);
+  }, [name, address, email, buttonText, photo]);
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -244,13 +244,13 @@ const EditProfile = ({ route }) => {
     // Check if inputs are valid
     if (!nameRegex.test(name) || !name) {
       setError("Invalid Name", "Please enter a valid name.");
-    setMainLoading(false);
+      setMainLoading(false);
 
       return;
     }
     if (!emailRegex.test(email) || !email) {
       setError1("Invalid Email", "Please enter a valid email address.");
-    setMainLoading(false);
+      setMainLoading(false);
 
       return;
     }
@@ -263,7 +263,7 @@ const EditProfile = ({ route }) => {
         "Invalid Address",
         "Please enter a valid 10-digit phone number."
       );
-    setMainLoading(false);
+      setMainLoading(false);
 
       return;
     }
@@ -272,38 +272,38 @@ const EditProfile = ({ route }) => {
     try {
       const nameValue = await AsyncStorage.getItem("name");
       const photoValue = await AsyncStorage.getItem("-photo");
-      
+
       if (nameValue === null || photoValue === null) {
         if (photoValue === null) {
-    setMainLoading(false);
+          setMainLoading(false);
 
           setPhotoError("Please upload photo");
           return true;
         } else if (nameValue === null) {
-    setMainLoading(false);
+          setMainLoading(false);
 
           setSaveError("Save Details First!!");
           return true;
         }
         // return true; // Prevent the back action
       }
-      
+
       // console.log(nameValue); // This will log the stored value of "name"
       // console.log(nameValue.length); // This will log the length of the stored value
-      
+
       // navigation.goBack();
       // return true;
     } catch (error) {
-    setMainLoading(false);
+      setMainLoading(false);
 
       console.log("Error retrieving data from AsyncStorage:", error);
     }
     setMainLoading(true);
     setLoading(true);
     setEditable(false);
-    handleUpdate();
+    await handleUpdate();
     // handleSubmit();
-    setButtonText("Edit Profile");
+    // setButtonText("Edit Profile");
     setSaveError("");
   };
   const handleEditPress = () => {
@@ -369,6 +369,7 @@ const EditProfile = ({ route }) => {
   }, [photo]);
   const formdata = new FormData();
   const handleUpdate = async () => {
+    console.log(phone,address,email,name,photo);
     if (!photo) {
       formdata.append("name", name);
       formdata.append("email", email);
@@ -397,26 +398,33 @@ const EditProfile = ({ route }) => {
     const requestOptions = {
       method: "POST",
       headers: {
-        // 'Content-Type': 'multipart/form-data',
+        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`,
       },
       body: formdata,
     };
+    console.log(requestOptions);
+    console.log(formdata._parts);
 
     try {
-      await fetch(api + "update", requestOptions).then((response) => {
-        // console.log(JSON.stringify(response));
-        response.json().then((data) => {
-          // console.log("update hu dost", data);
-          setShow(true);
-          setMessage("Profile Updated Successfully.");
-
-          setTimeout(() => {
-            setMainLoading(false);
-            setShow(false);
-          }, 1000);
-        });
-      });
+      console.log("here");
+      const response = await fetch(api + "update", requestOptions);
+      
+      console.log(response.ok);
+      if (response.ok) {
+        console.log(response.status);
+        const data = await response.json();
+        
+        setShow(true);
+        setMessage("Profile Updated Successfully.");
+        setButtonText("Edit Profile");
+        
+        setTimeout(() => {
+          setMainLoading(false);
+          setShow(false);
+        }, 1000);
+      }
+      
       setLoading(false);
     } catch (error) {
       if (error.message === "Network request failed") {
@@ -426,7 +434,7 @@ const EditProfile = ({ route }) => {
         setMessage("Unable to save data. Please save again")
         setMainLoading(false);
       }
-      // console.log(error);
+       console.log(error);
       setLoading(false);
     }
   };
@@ -500,7 +508,7 @@ const EditProfile = ({ route }) => {
           >
             <View style={{ position: "absolute", left: 15 }}>
               <TouchableOpacity
-                onPress={ async () => {
+                onPress={async () => {
                   if (name === "" || name === null) {
                     setError("Enter Name");
                     return true;
@@ -514,7 +522,7 @@ const EditProfile = ({ route }) => {
                     try {
                       const nameValue = await AsyncStorage.getItem("name");
                       const photoValue = await AsyncStorage.getItem("-photo");
-                      
+
                       if (nameValue === null || photoValue === null) {
                         if (photoValue === null) {
                           setPhotoError("Please upload photo");
@@ -525,10 +533,10 @@ const EditProfile = ({ route }) => {
                         }
                         // return true; // Prevent the back action
                       }
-                      
+
                       console.log(nameValue); // This will log the stored value of "name"
                       console.log(nameValue.length); // This will log the length of the stored value
-                      
+
                       navigation.goBack();
                       return true;
                     } catch (error) {
@@ -591,10 +599,10 @@ const EditProfile = ({ route }) => {
             ) : null}
           </AvatarView>
 
-          
+
           {photoError && (
-                  <ErrorText>{photoError}</ErrorText>
-                )}
+            <ErrorText>{photoError}</ErrorText>
+          )}
           <AvatarText>{name}</AvatarText>
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <FterView flex={1}>

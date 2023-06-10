@@ -264,7 +264,7 @@ export const LoginScreen = () => {
         backgroundColor: "#fff",
         justifyContent: "center",
         position: "absolute",
-        top: deviceHeight - 15,
+        top: deviceHeight - 20,
         alignSelf: "center"
       }}>
         <Text style={{ fontFamily: "Montserrat_400Regular" }}>

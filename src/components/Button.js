@@ -1,15 +1,15 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Pressable } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
 export const Button = (props) => {
   const { onPress, bg = "black", width = "100%", title = "Save" } = props;
   return (
-    <TouchableOpacity onPress={onPress}>
+    <Pressable onPress={onPress}>
       <View style={styles.button} width={width} backgroundColor={bg}>
         <Text style={styles.text}>{title}</Text>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

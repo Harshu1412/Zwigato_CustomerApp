@@ -591,8 +591,7 @@ const styles = StyleSheet.create({
     width: "92%",
     // marginTop: "auto",
     position: "absolute",
-    top: deviceHeight - 150
-    ,
+    top: deviceHeight - 150,
 
     // paddingVertical: 10,
     // bottom: 10,

@@ -170,9 +170,10 @@ export const OrdersScreen = ({ navigation }) => {
   const renderItems = (item) => {
     // console.log(item.Card);
     let lastDigit = "";
+    let cardName = "";
     if(item.Card !== null){
 
-      lastDigit = item.Card.last4
+      lastDigit = item.Card.card_no
       cardName = item.Card.name
       if(lastDigit === null || lastDigit === ""){
         lastDigit ="4242"

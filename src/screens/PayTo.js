@@ -242,14 +242,15 @@ const Payment = () => {
           setShow(true);
           setShowNewItemForm(false);
           setApiError("Card Added Successfully!");
+          
           getArticles();
           setNewItemName("");
           setCardNumber("");
           setCvv("");
           setExpiry("");
         } else if (response.status === 402) {
-          setShow(true);
-          setApiError(`Invalid Card Details - ${data.error.code}`);
+          // setShow(true);
+          // setApiError(`Invalid Card Details - ${data.error.code}`);
           if (data.error.code == "invalid_expiry_year") setExpiryError(true);
           if (data.error.code == "invalid_expiry_month") setExpiryError(true);
           if (data.error.code == "incorrect_number") setNumberError(true);
@@ -265,7 +266,6 @@ const Payment = () => {
       } finally {
         setIsLoading(false);
       }
-      getArticles();
     }
   };
 
