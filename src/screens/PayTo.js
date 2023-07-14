@@ -114,6 +114,7 @@ const Payment = () => {
     await fetch(api + "payment/pay", requestOptions)
       .then((response) => {
         response.json().then((data) => {
+          console.log(response.status);
           if (response.ok) {
             setPaymentSuccess(true);
             setSuccess(true);
@@ -125,6 +126,8 @@ const Payment = () => {
           } else if (response.status == 400) {
             console.log(data);
             console.log("errors");
+            setShow(true);
+            setApiError(data.message);
           }
         });
         setSuccess(false);
@@ -242,7 +245,7 @@ const Payment = () => {
           setShow(true);
           setShowNewItemForm(false);
           setApiError("Card Added Successfully!");
-          
+
           getArticles();
           setNewItemName("");
           setCardNumber("");
@@ -324,16 +327,12 @@ const Payment = () => {
         </View>
       )}
 
-
-
       {showLottie ? (
         <Modal animationType="slide" transparent={true} visible={showLottie}>
           <View style={styles.centeredView}>
             <PaymentLottie />
           </View>
         </Modal>
-
-
       ) : (
         <View style={{ flex: 1 }}>
           <View style={{ marginHorizontal: "5%" }}>
@@ -373,7 +372,7 @@ const Payment = () => {
                       fontFamily: "Montserrat_600SemiBold",
                     }}
                   >
-                    XXXX {item.card_no} 
+                    XXXX {item.card_no}
                   </Text>
                 </View>
                 <View style={CustomStyles.selectItem}>
@@ -563,11 +562,12 @@ const Payment = () => {
                   </View>
                 </View>
                 {isLoading ? (
-                  <TouchableOpacity style={CustomStyles.addNewCardButtonContainer}>
-
+                  <TouchableOpacity
+                    style={CustomStyles.addNewCardButtonContainer}
+                  >
                     <ActivityIndicator color="white" size="large" />
                   </TouchableOpacity>
-                ) :
+                ) : (
                   <>
                     <TouchableOpacity
                       onPress={() => handleAddItem()}
@@ -578,7 +578,7 @@ const Payment = () => {
                       </Text>
                     </TouchableOpacity>
                   </>
-                }
+                )}
               </View>
             </View>
             <Snackbar

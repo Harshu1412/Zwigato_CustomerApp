@@ -25,10 +25,6 @@ import Maps from "../components/Maps";
 
 Mapbox.setWellKnownTileServer("Mapbox");
 
-Mapbox.setAccessToken(
-  "pk.eyJ1IjoiaGFyc2h1MTQxMiIsImEiOiJjbGdtMWN1MHMwMWMxM3FwcGZ3a3p2ajliIn0.sAqxecqbNtP8fVkl_9m9xQ"
-);
-
 const PlaceOrderDetailScreen = ({ route }) => {
   const {
     inst,
@@ -53,6 +49,12 @@ const PlaceOrderDetailScreen = ({ route }) => {
   const [apiError, setApiError] = useState(null);
   const [show, setShow] = useState(false);
 
+  const [mapboxToken, setMapboxToken] = useState("");
+  AsyncStorage.getItem("-MapboxToken").then((token) => {
+    setMapboxToken(token);
+  });
+
+  Mapbox.setAccessToken(mapboxToken);
   AsyncStorage.getItem("token").then((token) => {
     setAuthToken(token);
   });
@@ -85,7 +87,7 @@ const PlaceOrderDetailScreen = ({ route }) => {
       );
       setItemPrice(itemfee);
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       if (error.message === "Network request failed") {
         setShow(true);
         setApiError(
@@ -373,8 +375,6 @@ const PlaceOrderDetailScreen = ({ route }) => {
                 height: 200,
                 marginTop: 14,
                 alignItems: "center",
-
-
               }}
             >
               <Maps
@@ -438,7 +438,11 @@ const PlaceOrderDetailScreen = ({ route }) => {
               />
             </View>
           </View>
-          <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
+          <Snackbar
+            visible={show}
+            duration={1000}
+            onDismiss={() => setShow(false)}
+          >
             {apiError}
           </Snackbar>
           <CheckInternet />

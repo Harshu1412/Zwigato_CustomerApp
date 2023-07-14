@@ -13,11 +13,7 @@ import {
   BackHandler,
   ActivityIndicator,
 } from "react-native";
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-} from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
 import styled from "styled-components/native";
 import { AntDesign, Entypo } from "@expo/vector-icons";
@@ -32,7 +28,8 @@ import { api } from "../../Api";
 import { Snackbar } from "react-native-paper";
 import CheckInternet from "../components/CheckInternet";
 import { codeFinder } from "../components/CountryCode";
-import { ErrorText } from './../styles/styles';
+import { ErrorText } from "./../styles/styles";
+
 const MView = styled.View`
 flex:1;
 background-color:white
@@ -101,7 +98,6 @@ const EditProfile = ({ route }) => {
     setAuthToken(token);
   });
 
-
   useEffect(() => {
     const fetchData = async () => {
       if (
@@ -120,7 +116,7 @@ const EditProfile = ({ route }) => {
               Authorization: `Bearer ${authToken}`,
             },
           };
-          const response = await fetch(api + "get", requestOptions);
+          const response = await fetch(api + "getuser", requestOptions);
           console.log(response.status);
 
           const json = await response.json();
@@ -160,7 +156,6 @@ const EditProfile = ({ route }) => {
     fetchData();
   }, [authToken, handleSavePress]);
 
-
   useEffect(() => {
     const backAction = async () => {
       if (name === "" || name === null) {
@@ -198,7 +193,6 @@ const EditProfile = ({ route }) => {
           const photoValue = await AsyncStorage.getItem("-photo");
 
           if (nameValue === null || photoValue === null) {
-
             if (photoValue === null) {
               setPhotoError("Please upload photo");
               return true;
@@ -217,7 +211,6 @@ const EditProfile = ({ route }) => {
         } catch (error) {
           console.log("Error retrieving data from AsyncStorage:", error);
         }
-
       } else {
         navigation.goBack();
         return true;
@@ -346,8 +339,6 @@ const EditProfile = ({ route }) => {
     }, [])
   );
 
-
-
   const pickImage = useCallback(async () => {
     setModalVisible(false);
     try {
@@ -360,7 +351,7 @@ const EditProfile = ({ route }) => {
       if (!result.canceled) {
         const photoUri = result.assets[0].uri;
         setPhoto(photoUri);
-        setPhotoError(false)
+        setPhotoError(false);
         await AsyncStorage.setItem("-photo", photoUri);
       }
     } catch (error) {
@@ -369,7 +360,7 @@ const EditProfile = ({ route }) => {
   }, [photo]);
   const formdata = new FormData();
   const handleUpdate = async () => {
-    console.log(phone,address,email,name,photo);
+    console.log(phone, address, email, name, photo);
     if (!photo) {
       formdata.append("name", name);
       formdata.append("email", email);
@@ -398,7 +389,7 @@ const EditProfile = ({ route }) => {
     const requestOptions = {
       method: "POST",
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
       body: formdata,
@@ -409,51 +400,48 @@ const EditProfile = ({ route }) => {
     try {
       console.log("here");
       const response = await fetch(api + "update", requestOptions);
-      
+
       console.log(response.ok);
       if (response.ok) {
         console.log(response.status);
         const data = await response.json();
-        
+
         setShow(true);
         setMessage("Profile Updated Successfully.");
         setButtonText("Edit Profile");
-        
+
         setTimeout(() => {
           setMainLoading(false);
           setShow(false);
         }, 1000);
       }
-      
+
       setLoading(false);
     } catch (error) {
       if (error.message === "Network request failed") {
         setEditable(true);
         setButtonText("Save");
         setShow(true);
-        setMessage("Unable to save data. Please save again")
+        setMessage("Unable to save data. Please save again");
         setMainLoading(false);
       }
-       console.log(error);
+      console.log(error);
       setLoading(false);
     }
   };
   return (
     <>
-      {mainLoading && (<View >
-        <Modal
-          animationType="none"
-          transparent
-          visible={mainLoading}>
-          <View style={styles.centeredView1}>
-            <View style={styles.modalView1}>
-              <ActivityIndicator size={40} />
+      {mainLoading && (
+        <View>
+          <Modal animationType="none" transparent visible={mainLoading}>
+            <View style={styles.centeredView1}>
+              <View style={styles.modalView1}>
+                <ActivityIndicator size={40} />
+              </View>
             </View>
-          </View>
-        </Modal>
-      </View>
-      )
-      }
+          </Modal>
+        </View>
+      )}
       <SafeAreaView style={{ flex: 1, backgroundColor: "white", padding: 8 }}>
         <MView>
           <Modal
@@ -540,7 +528,10 @@ const EditProfile = ({ route }) => {
                       navigation.goBack();
                       return true;
                     } catch (error) {
-                      console.log("Error retrieving data from AsyncStorage:", error);
+                      console.log(
+                        "Error retrieving data from AsyncStorage:",
+                        error
+                      );
                     }
                   } else if (!mainLoading) {
                     navigation.goBack();
@@ -599,10 +590,7 @@ const EditProfile = ({ route }) => {
             ) : null}
           </AvatarView>
 
-
-          {photoError && (
-            <ErrorText>{photoError}</ErrorText>
-          )}
+          {photoError && <ErrorText>{photoError}</ErrorText>}
           <AvatarText>{name}</AvatarText>
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <FterView flex={1}>
@@ -674,10 +662,7 @@ const EditProfile = ({ route }) => {
                       }}
                     />
                   </View>
-                  <Text style={{ fontSize: 14, color: "lightgrey" }}>
-                    {" "}
-                    |{" "}
-                  </Text>
+                  <Text style={{ fontSize: 14, color: "lightgrey" }}> | </Text>
                   <TextInput
                     value={phone}
                     flex={1}
@@ -723,14 +708,17 @@ const EditProfile = ({ route }) => {
               </View>
             </FterView>
           </ScrollView>
-          <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
+          <Snackbar
+            visible={show}
+            duration={1000}
+            onDismiss={() => setShow(false)}
+          >
             {message}
           </Snackbar>
           <StatusBar style="dark" />
         </MView>
         <CheckInternet />
       </SafeAreaView>
-
     </>
   );
 };
@@ -801,8 +789,8 @@ const styles = StyleSheet.create({
   },
   centeredView1: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 22,
   },
   modalView1: {
@@ -810,9 +798,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: "70%",
     height: "20%",
-    justifyContent: 'center',
-    alignItems: 'center',
-
-
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

@@ -5,9 +5,13 @@ import {
   Keyboard,
   FlatList,
   TouchableOpacity,
-
-  BackHandler, Modal, Pressable, Alert, ScrollView, Dimensions, ActivityIndicator
-
+  BackHandler,
+  Modal,
+  Pressable,
+  Alert,
+  ScrollView,
+  Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { api } from "../../Api";
 import React, { useEffect, useState } from "react";
@@ -18,18 +22,14 @@ import CustomCheckbox from "./../components/Checkbox";
 import Titlebar from "./../components/TitileBar";
 import SvgUri from "react-native-svg-uri";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Ionicons } from '@expo/vector-icons';
-import MapboxPlacesAutocomplete from "react-native-mapbox-places-autocomplete"
-import Mapbox from '@rnmapbox/maps';
+import { Ionicons } from "@expo/vector-icons";
+import MapboxPlacesAutocomplete from "react-native-mapbox-places-autocomplete";
+import Mapbox from "@rnmapbox/maps";
 import CheckInternet from "../components/CheckInternet";
-import { Feather } from '@expo/vector-icons';
+import { Feather } from "@expo/vector-icons";
 
-Mapbox.setAccessToken('pk.eyJ1IjoiaGFyc2h1MTQxMiIsImEiOiJjbGdtMWN1MHMwMWMxM3FwcGZ3a3p2ajliIn0.sAqxecqbNtP8fVkl_9m9xQ');
-
-const deviceHeight = Dimensions.get("window").height
+const deviceHeight = Dimensions.get("window").height;
 const TaskScreen1 = ({ navigation }) => {
-
-
   const [isFocused, setIsFocused] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [checkedItems, setCheckedItems] = useState([]);
@@ -42,18 +42,22 @@ const TaskScreen1 = ({ navigation }) => {
   const [addTaskError, setAddTaskError] = useState(false);
   const [instructionError, setInstructionError] = useState(false);
   const [authToken, setAuthToken] = useState("");
-  const [isModal, setIsModal] = useState(false)
-  const [isModal1, setIsModal1] = useState(false)
-  const [pickupLong, setPickupLong] = useState("")
-  const [pickupLat, setPickupLat] = useState("")
-  const [dropLong, setDropLong] = useState("")
-  const [dropLat, setDropLat] = useState("")
-  const [loader, setLoader] = useState(true)
+  const [isModal, setIsModal] = useState(false);
+  const [isModal1, setIsModal1] = useState(false);
+  const [pickupLong, setPickupLong] = useState("");
+  const [pickupLat, setPickupLat] = useState("");
+  const [dropLong, setDropLong] = useState("");
+  const [dropLat, setDropLat] = useState("");
+  const [loader, setLoader] = useState(true);
   const [apiError, setApiError] = useState(null);
   const [show, setShow] = useState(false);
+  const [mapboxToken, setMapboxToken] = useState("");
+
+  AsyncStorage.getItem("-MapboxToken").then((token) => {
+    setMapboxToken(token);
+  });
 
   const MAX_WORDS = 50;
-
   const [colorList, setColorList] = useState([]);
   const [tokenId, setTokenId] = useState("");
   const getItems = async () => {
@@ -81,10 +85,7 @@ const TaskScreen1 = ({ navigation }) => {
   const handleTextChange = (text) => {
     setInstructionError(false);
     setInstruction(text);
-
   };
-
-
 
   useEffect(() => {
     getItems();
@@ -106,7 +107,7 @@ const TaskScreen1 = ({ navigation }) => {
 
   const handleFocus = () => {
     setIsFocused(true);
-    setIsModal(true)
+    setIsModal(true);
     // navigation.navigate("Autocomplete")
   };
   const handleBlur = () => {
@@ -119,9 +120,9 @@ const TaskScreen1 = ({ navigation }) => {
     Keyboard.dismiss();
   };
   const handleFocus0 = () => {
-    setIsFocused(true)
-    setIsModal1(true)
-  }
+    setIsFocused(true);
+    setIsModal1(true);
+  };
 
   const handleModal = () => {
     setModalVisible(!modalVisible);
@@ -130,7 +131,7 @@ const TaskScreen1 = ({ navigation }) => {
   const handleSubmit = async () => {
     // validate form inputs
     let inst = instruction.trim();
-    console.log("-----", inst)
+    console.log("-----", inst);
     if (pickUp.length === 0) {
       setPickupError(true);
     }
@@ -198,14 +199,13 @@ const TaskScreen1 = ({ navigation }) => {
           pickupLat,
           pickupLong,
           dropLat,
-          dropLong
+          dropLong,
         });
       } catch (error) {
         console.log(error);
       }
     }
   };
-
 
   return (
     <>
@@ -220,7 +220,15 @@ const TaskScreen1 = ({ navigation }) => {
           </Modal>
         </View>
       )}
-      <View style={{ width: "100%", marginTop: 10, alignSelf: 'center', backgroundColor: 'white', paddingHorizontal: "5%" }}>
+      <View
+        style={{
+          width: "100%",
+          marginTop: 10,
+          alignSelf: "center",
+          backgroundColor: "white",
+          paddingHorizontal: "5%",
+        }}
+      >
         <Titlebar title={"Task"} />
       </View>
       <ScrollView contentContainerStyle={styles.mainView}>
@@ -237,96 +245,88 @@ const TaskScreen1 = ({ navigation }) => {
             right={
               <TextInput.Icon
                 icon={() => (
-
-                  <Ionicons name="location-outline" size={22} color="black" onPress={() => navigation.navigate("MapBoxScreen")} />
+                  <Ionicons
+                    name="location-outline"
+                    size={22}
+                    color="black"
+                    onPress={() => navigation.navigate("MapBoxScreen")}
+                  />
                 )}
               />
             }
             theme={{
               ...DefaultTheme,
               roundness: 10,
-              colors: { primary: "#0C8A7B", background: "black", },
+              colors: { primary: "#0C8A7B", background: "black" },
             }}
             style={{
               backgroundColor: "white",
               borderColor: isFocused ? "#0C8A7B" : "#808080",
               color: "black",
-
             }}
           />
         </Pressable>
         <Modal
           animationType="slide"
-
           visible={isModal}
           presentationStyle="overFullScreen"
           onRequestClose={() => setIsModal(!isModal)}
-
         >
           <View style={styles.centeredView}>
-
-
-
             <View>
               <MapboxPlacesAutocomplete
                 id="origin"
                 placeholder="Pickup Address"
                 value={pickUp}
-                accessToken={
-                  "pk.eyJ1IjoiaGFyc2h1MTQxMiIsImEiOiJjbGdtMWN1MHMwMWMxM3FwcGZ3a3p2ajliIn0.sAqxecqbNtP8fVkl_9m9xQ"}
+                accessToken={mapboxToken}
                 onPlaceSelect={(data) => {
-                  setPickUp(data.place_name)
-                  setIsModal(false)
-                  setPickupError(false)
-                  console.log(data.geometry.coordinates[0])
-                  setPickupLong(data.geometry.coordinates[0])
-                  setPickupLat(data.geometry.coordinates[1])
+                  setPickUp(data.place_name);
+                  setIsModal(false);
+                  setPickupError(false);
+                  console.log(data.geometry.coordinates[0]);
+                  setPickupLong(data.geometry.coordinates[0]);
+                  setPickupLat(data.geometry.coordinates[1]);
                 }}
-
                 onClearInput={({ id }) => {
                   id === "origin" && setPickUp(null);
                 }}
-
                 countryId="IN"
                 inputStyle={{
                   backgroundColor: "white",
                   borderWidth: 1,
                   borderRadius: 10,
-                  height: "150%"
-
+                  height: "150%",
                 }}
                 containerStyle={{
                   marginTop: 15,
 
                   width: "92%",
 
-                  alignSelf: 'center',
-
+                  alignSelf: "center",
                 }}
               />
             </View>
           </View>
         </Modal>
 
-
         {pickUpError ? (
-          <Text style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}>
+          <Text
+            style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}
+          >
             Select pickup loacation
           </Text>
         ) : null}
         {/*deliver to view */}
         <Pressable style={styles.textinputsView} onPress={() => handleFocus0()}>
           <TextInput
-
             label="Deliver to"
             mode="outlined"
             selection={{ start: 0 }}
             editable={false}
             value={deliverTo}
             onChangeText={(text) => {
-              setDeliverTo(text)
-            }
-            }
+              setDeliverTo(text);
+            }}
             onFocus={handleFocus0}
             // onBlur={handleBlur0}
             right={
@@ -345,7 +345,6 @@ const TaskScreen1 = ({ navigation }) => {
               backgroundColor: "white",
               borderColor: isFocused ? "#0C8A7B" : "#808080",
               color: "black",
-
             }}
           />
         </Pressable>
@@ -354,22 +353,22 @@ const TaskScreen1 = ({ navigation }) => {
           animationType="slide"
           visible={isModal1}
           presentationStyle="overFullScreen"
-          onRequestClose={() => setIsModal1(!isModal1)}>
+          onRequestClose={() => setIsModal1(!isModal1)}
+        >
           <View style={styles.centeredView}>
             <View>
               <MapboxPlacesAutocomplete
                 id="origin"
                 placeholder="Destination Address"
                 value={deliverTo}
-                accessToken={
-                  "pk.eyJ1IjoiaGFyc2h1MTQxMiIsImEiOiJjbGdtMWN1MHMwMWMxM3FwcGZ3a3p2ajliIn0.sAqxecqbNtP8fVkl_9m9xQ"}
+                accessToken={mapboxToken}
                 onPlaceSelect={(data) => {
-                  setDeliverTo(data.place_name)
+                  setDeliverTo(data.place_name);
                   setDeliverError(false);
-                  setIsModal1(false)
-                  console.log(data.geometry.coordinates[0])
-                  setDropLong(data.geometry.coordinates[0])
-                  setDropLat(data.geometry.coordinates[1])
+                  setIsModal1(false);
+                  console.log(data.geometry.coordinates[0]);
+                  setDropLong(data.geometry.coordinates[0]);
+                  setDropLat(data.geometry.coordinates[1]);
                 }}
                 onClearInput={({ id }) => {
                   id === "origin" && setDeliverTo(null);
@@ -379,30 +378,33 @@ const TaskScreen1 = ({ navigation }) => {
                   backgroundColor: "white",
                   height: "150%",
                   borderWidth: 1,
-                  borderRadius: 8
+                  borderRadius: 8,
                 }}
                 containerStyle={{
                   marginTop: 15,
                   width: "92%",
-                  alignSelf: 'center',
+                  alignSelf: "center",
                 }}
               />
             </View>
           </View>
         </Modal>
 
-
-
         {deliverError ? (
-          <Text style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}>
+          <Text
+            style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}
+          >
             Select delivery loacation
           </Text>
         ) : null}
 
-        <Pressable style={styles.textinputsView} onPress={() => {
-          setAddTaskError(false);
-          setModalVisible(!modalVisible)
-        }}>
+        <Pressable
+          style={styles.textinputsView}
+          onPress={() => {
+            setAddTaskError(false);
+            setModalVisible(!modalVisible);
+          }}
+        >
           <TextInput
             editable={false}
             label="Add task details"
@@ -438,7 +440,9 @@ const TaskScreen1 = ({ navigation }) => {
         </Pressable>
 
         {addTaskError && !modalVisible ? (
-          <Text style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}>
+          <Text
+            style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}
+          >
             please select item
           </Text>
         ) : null}
@@ -521,13 +525,17 @@ const TaskScreen1 = ({ navigation }) => {
           </View>
         )}
         {instruction.length > 500 && (
-          <Text style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}>
+          <Text
+            style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}
+          >
             Instructions should not exceed 500 characters.
           </Text>
         )}
 
         {instructionError ? (
-          <Text style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}>
+          <Text
+            style={{ color: "red", alignSelf: "flex-start", marginLeft: 25 }}
+          >
             Please write something
           </Text>
         ) : null}
@@ -547,13 +555,16 @@ const TaskScreen1 = ({ navigation }) => {
             <Text style={{ color: "white" }}>Submit</Text>
           </TouchableOpacity>
         </View>
-        <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
+        <Snackbar
+          visible={show}
+          duration={1000}
+          onDismiss={() => setShow(false)}
+        >
           {apiError}
         </Snackbar>
         <CheckInternet />
       </ScrollView>
     </>
-
   );
 };
 
@@ -564,7 +575,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     alignItems: "center",
     // flex: 1,
-    flexGrow: 1
+    flexGrow: 1,
   },
   textinputsView: {
     marginTop: "4%",
@@ -599,15 +610,14 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -622,20 +632,20 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonOpen: {
-    backgroundColor: '#F194FF',
+    backgroundColor: "#F194FF",
   },
   buttonClose: {
-    backgroundColor: '#2196F3',
-    marginTop: 'auto'
+    backgroundColor: "#2196F3",
+    marginTop: "auto",
   },
   textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   modalText: {
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
   centeredVieW: {
     flex: 1,
@@ -652,5 +662,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
 });

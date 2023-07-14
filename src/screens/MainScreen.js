@@ -5,7 +5,10 @@ import {
   TouchableOpacity,
   Pressable,
   BackHandler,
-  Alert, StyleSheet, Modal, ActivityIndicator
+  Alert,
+  StyleSheet,
+  Modal,
+  ActivityIndicator,
 } from "react-native";
 import React, {
   useCallback,
@@ -94,7 +97,7 @@ const MainScreen = () => {
   const [loader, setLoader] = useState(false);
   const [show, setShow] = useState(false);
   const [apiError, setApiError] = useState(null);
-
+  const [mapboxToken, setMapboxToken] = useState("");
   const handleFcm = (token) => {
     SetfcmToken(token);
   };
@@ -106,11 +109,10 @@ const MainScreen = () => {
     const photoUri = await AsyncStorage.getItem(`-photo`);
     const nameGet = await AsyncStorage.getItem("name");
     if (nameGet !== null) {
-      const firstName = (nameGet).split(" ")[0]
+      const firstName = nameGet.split(" ")[0];
       setName(firstName);
     } else {
       setName(null);
-
     }
     setPhoto(photoUri);
     fetchData();
@@ -123,9 +125,7 @@ const MainScreen = () => {
 
   useEffect(() => {
     fetchData();
-
-  }, [])
-
+  }, []);
 
   useEffect(() => {
     const backAction = () => {
@@ -158,18 +158,21 @@ const MainScreen = () => {
     };
 
     try {
-      const response = await fetch(api + "get", requestOptions);
+      const response = await fetch(api + "getuser", requestOptions);
 
       const json = await response.json();
-      // console.log(json);
+
+      console.log(json);
+      console.log("=======================", json.Default_Public_Token);
       if (json.data.name) {
-        const firstName = (json.data.name).split(" ")[0]
+        const firstName = json.data.name.split(" ")[0];
         setName(firstName);
         setPhoto(api + json.data.photo_uri);
-        setLoader(false)
+        setLoader(false);
         // console.log(api+json.data.photo_uri);
 
         AsyncStorage.setItem("-photo", api + json.data.photo_uri);
+        AsyncStorage.setItem("-MapboxToken", json.Default_Public_Token);
       } else {
         AsyncStorage.removeItem("name");
         AsyncStorage.removeItem("-photo");
@@ -185,7 +188,7 @@ const MainScreen = () => {
       }
       // console.log("Error: json or json.data is undefined or null.");
     } finally {
-      setLoader(false)
+      setLoader(false);
     }
   }, [name]);
 
@@ -236,8 +239,6 @@ const MainScreen = () => {
         </View>
       )}
 
-
-
       <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
         <FcmToken inputSelect={handleFcm} />
 
@@ -269,7 +270,10 @@ const MainScreen = () => {
               <CustomSidebar />
             </View>
 
-            <TouchableOpacity onPress={()=> navigation.navigate('EditProfile')} style={{ justifyContent: "center", alignItems: "center" }}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("EditProfile")}
+              style={{ justifyContent: "center", alignItems: "center" }}
+            >
               {!photo && (
                 <Avatar
                   rounded
@@ -336,7 +340,11 @@ const MainScreen = () => {
               Here's how you can use this for your needs
             </Text>
           </FooterText>
-          <Snackbar visible={show} duration={1000} onDismiss={() => setShow(false)}>
+          <Snackbar
+            visible={show}
+            duration={1000}
+            onDismiss={() => setShow(false)}
+          >
             {apiError}
           </Snackbar>
 
@@ -352,7 +360,6 @@ const MainScreen = () => {
 export default MainScreen;
 
 const styles = StyleSheet.create({
-
   centeredVieW: {
     flex: 1,
     justifyContent: "center",
@@ -368,5 +375,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
 });

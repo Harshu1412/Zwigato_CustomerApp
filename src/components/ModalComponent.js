@@ -22,84 +22,80 @@ export const Sidebar = ({ isOpen, onClose }) => {
   const [isNavigating, setIsNavigating] = useState(false);
   const handleTabPress = (tab) => {
     if (!isNavigating) {
-      setIsNavigating(true)
+      setIsNavigating(true);
       setActiveTab(tab);
       navigation.navigate("Main");
       setActiveTab(null);
       onClose();
     }
-
   };
   const handleTab1Press = (tab) => {
     if (!isNavigating) {
-      setIsNavigating(true)
+      setIsNavigating(true);
       setActiveTab(tab);
       navigation.navigate("EditProfile");
       setActiveTab(null);
       onClose();
     }
-
   };
   const handleTab2Press = (tab) => {
     if (!isNavigating) {
-      setIsNavigating(true)
+      setIsNavigating(true);
       setActiveTab(tab);
       navigation.navigate("Orders");
       setActiveTab(null);
       onClose();
     }
-
   };
   const handleTab3Press = (tab) => {
     if (!isNavigating) {
-      setIsNavigating(true)
+      setIsNavigating(true);
       setActiveTab(tab);
       navigation.navigate("Notifications");
       setActiveTab(null);
       onClose();
     }
-
   };
   const handleTab4Press = (tab) => {
     if (!isNavigating) {
-      setIsNavigating(true)
+      setIsNavigating(true);
       setActiveTab(tab);
       navigation.navigate("Ratings");
       setActiveTab(null);
       onClose();
     }
-
   };
   const handleTab5Press = async (tab) => {
     setActiveTab(tab);
     let token = "";
     try {
-      token = await AsyncStorage.getItem('token');
+      token = await AsyncStorage.getItem("token");
     } catch (error) {
-      console.log('Error retrieving token:', error);
+      console.log("Error retrieving token:", error);
     }
     const requestOptions = {
       method: "POST",
-      headers: { "Content-Type": "application/json", 'Authorization': `Bearer ${token}` },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
       const response = await fetch(`${api}auth/logout`, requestOptions);
-      console.log("logout testing ", response.ok)
+      console.log("logout testing ", response.ok);
       const json = await response.json();
       console.log(json);
       AsyncStorage.clear();
       await signOut(auth);
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Home' }],
+        routes: [{ name: "Home" }],
       });
       onClose();
     } catch (error) {
       console.log("afsljkasjkfj", error);
     }
-
-
   };
   const [photo, setPhoto] = useState(null);
   const [name, setName] = useState("");
@@ -118,12 +114,12 @@ export const Sidebar = ({ isOpen, onClose }) => {
   useFocusEffect(
     useCallback(() => {
       getProfilePicture();
-      setIsNavigating(false)
+      setIsNavigating(false);
     }, [])
   );
   if (isOpen) {
     if (isNavigating) {
-      setIsNavigating(false)
+      setIsNavigating(false);
     }
   }
 
@@ -137,16 +133,13 @@ export const Sidebar = ({ isOpen, onClose }) => {
     };
 
     try {
-      const response = await fetch(
-        `${api}get`,
-        requestOptions
-      );
+      const response = await fetch(`${api}getuser`, requestOptions);
       // console.log(response.ok);
       const json = await response.json();
       if (json.data.name) {
-        const firstName = (json.data.name).split(" ")[0]
+        const firstName = json.data.name.split(" ")[0];
         setName(firstName);
-        setPhoto(api + json.data.photo_uri)
+        setPhoto(api + json.data.photo_uri);
         AsyncStorage.setItem("name", json.data.name);
         AsyncStorage.setItem("-photo", api + json.data.photo_uri);
       } else {

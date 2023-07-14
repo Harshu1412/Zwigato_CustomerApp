@@ -23,11 +23,6 @@ import messaging from "@react-native-firebase/messaging";
 
 Mapbox.setWellKnownTileServer("Mapbox");
 
-Mapbox.setAccessToken(
-  "pk.eyJ1IjoiaGFyc2h1MTQxMiIsImEiOiJjbGdtMWN1MHMwMWMxM3FwcGZ3a3p2ajliIn0.sAqxecqbNtP8fVkl_9m9xQ"
-);
-
-
 const bikeimage = require("../../assets/bike.png");
 const TrackOrderScreen = ({ route }) => {
   const {
@@ -41,35 +36,37 @@ const TrackOrderScreen = ({ route }) => {
     delivery_longitude,
     driver_id,
     distance,
-    order_pin
+    order_pin,
   } = route.params;
   const [driverPhoto, setDriverPhoto] = useState("");
-  const [carNumber, setCarNumber] = useState("ABC-123")
+  const [carNumber, setCarNumber] = useState("ABC-123");
   const [authToken, setAuthToken] = useState("");
   const [driverName, setDriverName] = useState("");
   const [driverLong, setDriverLong] = useState("");
   const [driverLat, setDriverLat] = useState("");
   const [driverPhone, setDriverPhone] = useState("");
-  const [mapBounds,setMapBounds]=useState("")
+  const [mapBounds, setMapBounds] = useState("");
 
   const bottomSheetRef = useRef();
-
-//Hnadling Notification for cancelled orders !!!
-useEffect(()=>{
-  const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-    title = JSON.stringify(remoteMessage);
-    const jsonObj = JSON.parse(title);
-    console.log("-----------------", jsonObj);
-    if(remoteMessage.notification.title==="Order Cancelled")
-    {
-       
-      navigation.navigate("Main");
-    }
+  const [mapboxToken, setMapboxToken] = useState("");
+  AsyncStorage.getItem("-MapboxToken").then((token) => {
+    setMapboxToken(token);
   });
-  return unsubscribe;
-},[])
 
+  Mapbox.setAccessToken(mapboxToken);
 
+  //Hnadling Notification for cancelled orders !!!
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      title = JSON.stringify(remoteMessage);
+      const jsonObj = JSON.parse(title);
+      console.log("-----------------", jsonObj);
+      if (remoteMessage.notification.title === "Order Cancelled") {
+        navigation.navigate("Main");
+      }
+    });
+    return unsubscribe;
+  }, []);
 
   // variables
   const snapPoints = useMemo(() => ["15%", "40%", "50%"], []);
@@ -86,20 +83,20 @@ useEffect(()=>{
   const fetchLatestLocation = async () => {
     const locationDocRef = doc(db, "LocationData", `${driver_orderId}`);
     const locationDocSnapshot = await getDoc(locationDocRef);
-    
+
     if (locationDocSnapshot.exists()) {
       const locationData = locationDocSnapshot.data();
       setDriverLat(locationData.latitude);
       setDriverLong(locationData.longitude);
     }
-    
+
     // Set up real-time listener
     onSnapshot(locationDocRef, (snapshot) => {
       if (snapshot.exists()) {
         const locationData = snapshot.data();
         setDriverLat(locationData.latitude);
         setDriverLong(locationData.longitude);
-      } 
+      }
     });
   };
 
@@ -139,9 +136,9 @@ useEffect(()=>{
       await fetch(
         `${api}feedback/driver_feedback/${driver_orderId}`,
         requestOptions
-      ).then((response) => { 
+      ).then((response) => {
         response.json().then((data) => {
-          const firstName=(data.data.name).split(" ")[0]
+          const firstName = data.data.name.split(" ")[0];
           setDriverName(firstName);
           // setDriverName(data.data.name);
           setDriverPhone(data.data.phone);
@@ -161,7 +158,7 @@ useEffect(()=>{
         <Titlebar title="Track Order" />
       </View>
       <View style={styles.container}>
-        <Mapbox.MapView style={styles.map}  >
+        <Mapbox.MapView style={styles.map}>
           <Mapbox.Camera
             zoomLevel={12}
             centerCoordinate={[
@@ -174,9 +171,7 @@ useEffect(()=>{
             coordinate={[pickup_longitude, pickup_latitude]}
             anchor={{ x: 0.5, y: 1 }}
             onInitialized={() => {
-              setMapBounds([
-                [pickup_longitude, pickup_latitude],
-              ]);
+              setMapBounds([[pickup_longitude, pickup_latitude]]);
             }}
           >
             <View style={styles.markerContainer}>
@@ -191,11 +186,7 @@ useEffect(()=>{
             coordinate={[delivery_longitude, delivery_latitude]}
             anchor={{ x: 0.5, y: 1 }}
             onInitialized={() => {
-              setMapBounds((prevBounds) => [
-                ...prevBounds,
-                
-               ,
-              ]);
+              setMapBounds((prevBounds) => [...prevBounds, ,]);
             }}
           >
             <View style={styles.markerContainer}>
@@ -220,7 +211,6 @@ useEffect(()=>{
               </View>
             </Mapbox.MarkerView>
           )}
-
         </Mapbox.MapView>
         <Image source={bikeimage} style={{ width: 32, height: 32 }} />
       </View>
