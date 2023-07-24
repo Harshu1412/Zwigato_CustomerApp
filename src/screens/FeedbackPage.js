@@ -10,7 +10,8 @@ import {
   Modal,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import Ionicons from "react-native-vector-icons/Ionicons";
+// import Ionicons from "react-native-vector-icons/Ionicons";
+import { Ionicons } from '@expo/vector-icons'; 
 import { Snackbar } from "react-native-paper";
 import Titlebar from "../components/TitileBar";
 import CustomOutlinedTextInput from "../components/CustomOutlinedTextInput";
@@ -49,7 +50,7 @@ const Feedback = ({ route }) => {
 
     const stars = [];
     for (let i = 1; i <= 5; i++) {
-      const name = i <= rating ? "star" : "star-outline";
+      const name = i <= rating ? "star-sharp" : "star-outline";
       const color = pressed && i <= rating ? "#ffd700" : "#c7c7c7";
       stars.push(
         <TouchableOpacity key={i} onPress={() => handleRating(i)}>
